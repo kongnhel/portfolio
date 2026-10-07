@@ -1,0 +1,862 @@
+@import "tailwindcss";
+
+/* Class-based dark mode, toggled by .dark on <html>. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ---------------------------------------------------------------------------
+   Colour tokens.
+   Names are "surface/ink by strength", not literally "light"/"dark", so the
+   same utility works in both themes: bg-base-950 is always the page background,
+   text-base-100 is always the primary text. Only the values swap below.
+   --------------------------------------------------------------------------- */
+
+:root {
+  color-scheme: light;
+
+  /* Light theme */
+  --base-950: oklch(0.995 0.002 265); /* page background */
+  --base-900: oklch(0.975 0.003 265); /* cards, panels */
+  --base-850: oklch(0.955 0.004 265);
+  --base-800: oklch(0.895 0.005 265); /* borders, dividers */
+  --base-700: oklch(0.76 0.007 265); /* faint text, meta */
+  --base-500: oklch(0.5 0.011 265); /* secondary text */
+  --base-300: oklch(0.33 0.011 265); /* strong secondary text */
+  --base-100: oklch(0.16 0.008 265); /* primary text */
+
+  --accent: oklch(0.5 0.13 158);
+  --accent-muted: oklch(0.42 0.1 158);
+  /* Second hue for gradients and the ambient background layers, so the page is
+     not a single flat green. */
+  --accent-2: oklch(0.55 0.16 258);
+  --accent-3: oklch(0.6 0.15 32);
+
+  /* Geist first: it has no Khmer glyphs, so the browser skips it for Khmer and
+     lands on Kantumruy Pro for any Khmer that appears on an English page. */
+  --font-body: var(--font-geist-sans), var(--font-khmer), ui-sans-serif, system-ui,
+    sans-serif;
+
+  /* Khmer appended to the mono stack too: it has no monospace convention, so
+     Latin stays in Geist Mono while Khmer lands on Kantumruy instead of
+     falling through to a system font. */
+  --font-code: var(--font-geist-mono), var(--font-khmer), ui-monospace, monospace;
+}
+
+/* On Khmer pages the Khmer font leads. Latin runs inside them (Python, HTML)
+   still fall through to Geist. */
+html[lang="km"] {
+  --font-body: var(--font-khmer), var(--font-geist-sans), ui-sans-serif, system-ui,
+    sans-serif;
+
+  /* Khmer stacks diacritics above consonants; the default 1.5 clips them. */
+  line-height: 1.7;
+}
+
+/* tracking-* utilities are sized for Latin. Positive tracking splits the Khmer
+   script into separate glyphs, and negative tracking collides stacked
+   diacritics — so neutralise them wherever they appear on a Khmer page.
+   (0,1,1) beats the utilities' (0,1,0). */
+html[lang="km"]
+  :where(h1, h2, h3, h4, .font-mono, [class*="tracking-"]) {
+  letter-spacing: normal;
+}
+
+.dark {
+  color-scheme: dark;
+
+  /* Dark theme */
+  --base-950: oklch(0.15 0.008 265);
+  --base-900: oklch(0.192 0.009 265);
+  --base-850: oklch(0.225 0.01 265);
+  --base-800: oklch(0.275 0.011 265);
+  --base-700: oklch(0.365 0.012 265);
+  --base-500: oklch(0.6 0.014 265);
+  --base-300: oklch(0.8 0.012 265);
+  --base-100: oklch(0.94 0.008 265);
+
+  --accent: oklch(0.78 0.16 155);
+  --accent-muted: oklch(0.52 0.1 155);
+  --accent-2: oklch(0.72 0.14 268);
+  --accent-3: oklch(0.75 0.13 40);
+}
+
+/* `inline` keeps var() references so the .dark overrides cascade at runtime. */
+@theme inline {
+  --color-base-950: var(--base-950);
+  --color-base-900: var(--base-900);
+  --color-base-850: var(--base-850);
+  --color-base-800: var(--base-800);
+  --color-base-700: var(--base-700);
+  --color-base-500: var(--base-500);
+  --color-base-300: var(--base-300);
+  --color-base-100: var(--base-100);
+
+  --color-accent: var(--accent);
+  --color-accent-muted: var(--accent-muted);
+
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-code);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    /* Reference the raw tokens above, not the --color-* aliases: `@theme inline`
+       substitutes the value into utilities instead of emitting those names. */
+    background-color: var(--base-950);
+    color: var(--base-100);
+    font-family: var(--font-sans);
+
+    /* Creates a stacking context so the decorative layers below can sit at
+       z-index:-1 — above the page background, beneath all content. */
+    isolation: isolate;
+  }
+
+  body::before,
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  /* Faint technical grid, fading out below the fold. */
+  body::before {
+    background-image:
+      linear-gradient(
+        to right,
+        color-mix(in oklab, var(--base-800) 60%, transparent) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        to bottom,
+        color-mix(in oklab, var(--base-800) 60%, transparent) 1px,
+        transparent 1px
+      );
+    background-size: 72px 72px;
+    mask-image: radial-gradient(62rem 42rem at 50% 0%, black, transparent 78%);
+  }
+
+  /* Accent wash behind the hero, breathing very slowly. */
+  body::after {
+    background: radial-gradient(
+      50rem 34rem at 50% -10rem,
+      color-mix(in oklab, var(--accent) 16%, transparent),
+      transparent 68%
+    );
+    animation: glow-breathe 14s ease-in-out infinite;
+  }
+
+  ::selection {
+    background-color: var(--accent);
+    color: var(--base-950);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+}
+
+/* ============================================================
+   Ambient layers.
+   Three fixed, non-interactive layers behind the content:
+   the drifting aurora blobs, a film grain, and the spotlight that
+   follows the pointer. All are inside body's `isolation: isolate`
+   stacking context at z-index:-1, so they never intercept clicks.
+   ============================================================ */
+
+.ambient {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* Drifting colour fields. Each blob is a blurred radial gradient moved with
+   transforms only, so the compositor handles them without repainting. */
+.aurora {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(70px);
+  opacity: 0.55;
+  will-change: transform;
+}
+
+.aurora-1 {
+  top: -18vh;
+  left: -10vw;
+  width: 46rem;
+  height: 46rem;
+  background: radial-gradient(
+    circle,
+    color-mix(in oklab, var(--accent) 42%, transparent),
+    transparent 68%
+  );
+  animation: aurora-a 26s ease-in-out infinite alternate;
+}
+
+.aurora-2 {
+  top: 22vh;
+  right: -14vw;
+  width: 40rem;
+  height: 40rem;
+  background: radial-gradient(
+    circle,
+    color-mix(in oklab, var(--accent-2) 38%, transparent),
+    transparent 70%
+  );
+  animation: aurora-b 32s ease-in-out infinite alternate;
+}
+
+.aurora-3 {
+  bottom: -22vh;
+  left: 24vw;
+  width: 44rem;
+  height: 44rem;
+  background: radial-gradient(
+    circle,
+    color-mix(in oklab, var(--accent-3) 26%, transparent),
+    transparent 70%
+  );
+  animation: aurora-c 38s ease-in-out infinite alternate;
+}
+
+/* In light mode the blobs need less opacity or they tint the text. */
+html:not(.dark) .aurora {
+  opacity: 0.4;
+  filter: blur(90px);
+}
+
+/* Film grain: an inline SVG fractal noise, tiled. Keeps the flat gradients
+   from banding and gives the page a printed texture. */
+.grain {
+  position: fixed;
+  inset: -50%;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain-shift 6s steps(4) infinite;
+}
+
+html:not(.dark) .grain {
+  opacity: 0.035;
+}
+
+/* The "mouse hole": a soft accent spotlight that follows the cursor. Its
+   position arrives as --pointer-x/--pointer-y, written by PointerGlow. */
+.pointer-glow {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(
+    22rem circle at var(--pointer-x, 50%) var(--pointer-y, 30%),
+    color-mix(in oklab, var(--accent) 15%, transparent),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 600ms ease;
+}
+
+.pointer-glow.is-active {
+  opacity: 1;
+}
+
+/* Touch devices have no cursor to follow, and reduced motion should not have a
+   light source zip around, so the layer stays off in both cases. */
+@media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .pointer-glow {
+    display: none;
+  }
+}
+
+/* Per-card spotlight. The hovered card gets --spot-x/--spot-y from the same
+   pointer listener, so the highlight tracks the cursor inside that card. */
+[data-spotlight] {
+  position: relative;
+  background-image: radial-gradient(
+    15rem circle at var(--spot-x, 50%) var(--spot-y, 0%),
+    color-mix(in oklab, var(--accent) 13%, transparent),
+    transparent 65%
+  );
+}
+
+/* Gradient text for the one line that should feel like the brand. */
+.text-gradient {
+  background-image: linear-gradient(
+    100deg,
+    var(--base-100) 0%,
+    color-mix(in oklab, var(--accent) 85%, var(--base-100)) 45%,
+    var(--accent-2) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Gradient hairline used on hoverable cards. */
+.spot-border {
+  position: relative;
+}
+
+.spot-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: radial-gradient(
+    12rem circle at var(--spot-x, 50%) var(--spot-y, 0%),
+    color-mix(in oklab, var(--accent) 70%, transparent),
+    transparent 60%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 350ms ease;
+  pointer-events: none;
+}
+
+.spot-border:hover::before,
+.spot-border:focus-within::before {
+  opacity: 1;
+}
+
+/* ============================================================
+   Motion primitives.
+   No dependencies: keyframes below, triggered by an IntersectionObserver
+   inside src/components/reveal.tsx.
+
+   The hidden state is gated on `html.js`, which an inline script sets before
+   first paint. With scripting off the rule never matches, so every element
+   renders visible instead of leaving a blank page.
+   ============================================================ */
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, var(--reveal-y, 18px), 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes reveal-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes reveal-scale {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes reveal-left {
+  from {
+    opacity: 0;
+    transform: translate3d(-18px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes draw-down {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes dot-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.45);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes float-y {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-7px);
+  }
+}
+
+@keyframes ring-out {
+  from {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.55);
+  }
+}
+
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes sheen-sweep {
+  from {
+    transform: translateX(-130%);
+  }
+  to {
+    transform: translateX(260%);
+  }
+}
+
+@keyframes caret-blink {
+  0%,
+  45% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes shake {
+  10%,
+  90% {
+    transform: translateX(-2px);
+  }
+  20%,
+  80% {
+    transform: translateX(3px);
+  }
+  30%,
+  50%,
+  70% {
+    transform: translateX(-4px);
+  }
+  40%,
+  60% {
+    transform: translateX(4px);
+  }
+}
+
+@keyframes icon-swap {
+  from {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.55);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(0) scale(1);
+  }
+}
+
+@keyframes page-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes glow-breathe {
+  0%,
+  100% {
+    opacity: 0.65;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Ambient background drift. Transforms only — no layout, no repaint. */
+@keyframes aurora-a {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(8vw, 6vh, 0) scale(1.18);
+  }
+}
+
+@keyframes aurora-b {
+  from {
+    transform: translate3d(0, 0, 0) scale(1.1);
+  }
+  to {
+    transform: translate3d(-7vw, 9vh, 0) scale(0.94);
+  }
+}
+
+@keyframes aurora-c {
+  from {
+    transform: translate3d(0, 0, 0) scale(0.95);
+  }
+  to {
+    transform: translate3d(5vw, -7vh, 0) scale(1.15);
+  }
+}
+
+@keyframes grain-shift {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  25% {
+    transform: translate3d(-3%, 2%, 0);
+  }
+  50% {
+    transform: translate3d(2%, -3%, 0);
+  }
+  75% {
+    transform: translate3d(-2%, -2%, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes rule-in {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes wash {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* --- Scroll reveal -------------------------------------------------------
+   `data-state` is written by the observer, never by React, so the server HTML
+   and the first client render are byte-identical. Everything that has not been
+   marked "shown" yet is simply hidden. */
+
+html.js [data-reveal]:not([data-state="shown"]) {
+  opacity: 0;
+}
+
+html.js [data-reveal][data-state="shown"] {
+  animation-duration: var(--reveal-duration, 700ms);
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  animation-delay: var(--reveal-delay, 0ms);
+  animation-fill-mode: both;
+}
+
+html.js [data-reveal][data-state="shown"][data-variant="up"] {
+  animation-name: reveal-up;
+}
+
+html.js [data-reveal][data-state="shown"][data-variant="fade"] {
+  animation-name: reveal-fade;
+}
+
+html.js [data-reveal][data-state="shown"][data-variant="scale"] {
+  animation-name: reveal-scale;
+}
+
+html.js [data-reveal][data-state="shown"][data-variant="left"] {
+  animation-name: reveal-left;
+}
+
+/* --- Standalone helpers -------------------------------------------------- */
+
+.animate-float {
+  animation: float-y 7s ease-in-out infinite;
+}
+
+.animate-spin-slow {
+  animation: spin-slow 20s linear infinite;
+}
+
+/* Outward pulse behind the portrait. */
+.animate-ring {
+  animation: ring-out 3.4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+/* Soft glow that brightens and dims behind the hero portrait. */
+.animate-glow {
+  animation: glow-breathe 6s ease-in-out infinite;
+}
+
+.icon-swap {
+  animation: icon-swap 380ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.page-enter {
+  animation: page-in 320ms ease-out both;
+}
+
+/* Blinking block cursor after a typed-looking line. */
+.caret-blink::after {
+  content: "";
+  display: inline-block;
+  width: 0.5em;
+  height: 1em;
+  margin-left: 0.15em;
+  vertical-align: -0.12em;
+  background: currentColor;
+  animation: caret-blink 1.1s step-end infinite;
+}
+
+/* Light sweep across a button on hover. */
+.sheen {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.sheen::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 35%;
+  background: linear-gradient(
+    100deg,
+    transparent,
+    color-mix(in oklab, white 55%, transparent),
+    transparent
+  );
+  transform: translateX(-130%);
+  pointer-events: none;
+}
+
+.sheen:hover::after,
+.sheen:focus-visible::after {
+  animation: sheen-sweep 750ms ease-out;
+}
+
+/* Short accent rule beside section titles. It stays collapsed until the
+   enclosing [data-reveal] flips to "shown", so the line draws in as the
+   heading arrives rather than at page load. Only use it inside a Reveal. */
+html.js .rule-in {
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+html.js [data-reveal][data-state="shown"] .rule-in {
+  animation: rule-in 700ms cubic-bezier(0.16, 1, 0.3, 1)
+    calc(var(--reveal-delay, 0ms) + 120ms) both;
+}
+
+/* Timeline rail and markers. Both inherit `--reveal-delay` from the Reveal
+   that wraps them, so they stay in step with the entry they belong to. */
+html.js .timeline-rail,
+html.js .timeline-dot {
+  transform: scaleY(0);
+}
+
+html.js .timeline-rail {
+  transform-origin: top center;
+}
+
+html.js .timeline-dot {
+  transform: scale(0);
+}
+
+html.js [data-reveal][data-state="shown"] .timeline-rail {
+  animation: draw-down 900ms cubic-bezier(0.16, 1, 0.3, 1)
+    var(--reveal-delay, 0ms) both;
+}
+
+html.js [data-reveal][data-state="shown"] .timeline-dot {
+  animation: dot-pop 520ms cubic-bezier(0.16, 1, 0.3, 1)
+    calc(var(--reveal-delay, 0ms) + 200ms) both;
+}
+
+/* Sliding highlight behind the active nav item. */
+.nav-pill {
+  position: absolute;
+  top: 50%;
+  height: 28px;
+  border-radius: 8px;
+  background: color-mix(in oklab, var(--accent) 14%, transparent);
+  pointer-events: none;
+  transform: translateY(-50%);
+  transition:
+    left 450ms cubic-bezier(0.16, 1, 0.3, 1),
+    width 450ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 300ms ease;
+}
+
+/* Scroll reading progress. */
+.scroll-progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  transform: scaleX(0);
+  transform-origin: left center;
+  background: linear-gradient(
+    to right,
+    var(--accent),
+    color-mix(in oklab, var(--accent) 45%, transparent)
+  );
+}
+
+/* Mobile menu: collapses on height without display:none, so it can animate.
+   The breakpoint mirrors Tailwind's `sm` (40rem) and owns `display` itself —
+   an unlayered `.mobile-nav { display: grid }` would otherwise out-rank the
+   `sm:hidden` utility and leave the menu open on desktop. */
+.mobile-nav {
+  display: none;
+}
+
+@media (max-width: 39.999rem) {
+  .mobile-nav {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 320ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .mobile-nav.is-open {
+    grid-template-rows: 1fr;
+  }
+
+  .mobile-nav > * {
+    min-height: 0;
+    overflow: hidden;
+  }
+}
+
+/* Conic ring orbiting the portrait. */
+.photo-ring {
+  position: absolute;
+  inset: -6px;
+  border-radius: 9999px;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    color-mix(in oklab, var(--accent) 75%, transparent) 90deg,
+    transparent 200deg
+  );
+  mask: radial-gradient(farthest-side, transparent calc(100% - 2px), black 0);
+  animation: spin-slow 9s linear infinite;
+}
+
+.shake {
+  animation: shake 480ms cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+/* Slow accent wash drifting across the closing call-to-action panel. */
+.cta-wash {
+  background-image: linear-gradient(
+    115deg,
+    transparent 15%,
+    color-mix(in oklab, var(--accent) 20%, transparent) 50%,
+    transparent 85%
+  );
+  background-size: 260% 100%;
+  animation: wash 11s ease-in-out infinite;
+}
+
+/* Contact form fields: soft accent halo on focus instead of a hard swap. */
+.field {
+  transition:
+    border-color 250ms ease,
+    box-shadow 250ms ease,
+    background-color 250ms ease;
+}
+
+.field:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 22%, transparent);
+  outline: none;
+}
+
+/* Validation messages fade in rather than popping. */
+.error-in {
+  animation: page-in 240ms ease-out both;
+}
+
+/* Light theme: keep the grid, but let the accent fields read as colour rather
+   than as stains over the text. */
+:root:not(.dark) body::before {
+  background-image:
+    linear-gradient(
+      to right,
+      color-mix(in oklab, var(--base-800) 85%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in oklab, var(--base-800) 85%, transparent) 1px,
+      transparent 1px
+    );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  /* Skip the hide-then-show entirely rather than flashing through it. */
+  html.js [data-reveal] {
+    opacity: 1 !important;
+  }
+
+  /* The drifting fields have nothing to reveal without motion, so they are
+     parked as static, very soft washes instead of being switched off. */
+  .aurora {
+    animation: none !important;
+  }
+
+  .grain {
+    animation: none !important;
+  }
+}
