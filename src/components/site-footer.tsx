@@ -20,8 +20,13 @@ export function SiteFooter({
         className="mx-auto max-w-3xl px-6 py-8"
       >
         <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
-          <div>
-            <p className="text-sm text-base-500">
+          <div className="max-w-xs">
+            {/* Session-style status line, as printed by `whoami`. */}
+            <p aria-hidden="true" className="font-mono text-sm text-base-100">
+              <span className="prompt">nhel@portfolio</span>
+              <span className="text-base-500">:~$</span>
+            </p>
+            <p className="mt-2 text-sm leading-relaxed text-base-500">
               {site.name} — {dict.identity.tagline}
             </p>
             <p className="mt-1 font-mono text-xs text-base-700">
@@ -32,6 +37,9 @@ export function SiteFooter({
           <div className="flex flex-col gap-6 sm:flex-row sm:gap-10">
             <nav aria-label="Footer">
               <h2 className="font-mono text-xs uppercase tracking-wider text-base-700">
+                <span aria-hidden="true" className="prompt">
+                  cd{" "}
+                </span>
                 {dict.footer.pages}
               </h2>
               <ul className="mt-2 space-y-1.5">
@@ -39,7 +47,7 @@ export function SiteFooter({
                   <li key={path}>
                     <Link
                       href={localisedPath(locale, path)}
-                      className="text-sm text-base-500 hover:text-accent"
+                      className="font-mono text-sm text-base-500 transition-colors hover:text-accent"
                     >
                       {dict.nav[navLabelKeys[path]]}
                     </Link>
@@ -50,6 +58,9 @@ export function SiteFooter({
 
             <div>
               <h2 className="font-mono text-xs uppercase tracking-wider text-base-700">
+                <span aria-hidden="true" className="prompt">
+                  ls{" "}
+                </span>
                 {dict.footer.elsewhere}
               </h2>
               <ul className="mt-2 space-y-1.5">
@@ -59,7 +70,7 @@ export function SiteFooter({
                       href={social.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sm text-base-500 hover:text-accent"
+                      className="font-mono text-sm text-base-500 transition-colors hover:text-accent"
                     >
                       {social.label}
                     </a>
@@ -68,7 +79,7 @@ export function SiteFooter({
                 <li>
                   <Link
                     href={localisedPath(locale, "/contact")}
-                    className="text-sm text-base-500 hover:text-accent"
+                    className="font-mono text-sm text-base-500 transition-colors hover:text-accent"
                   >
                     {dict.contactPage.email}
                   </Link>
@@ -78,7 +89,8 @@ export function SiteFooter({
           </div>
         </div>
 
-        <p className="mt-8 font-mono text-xs text-base-700">
+        <p className="mt-8 flex items-center gap-2 border-t border-base-800 pt-4 font-mono text-xs text-base-700">
+          <span aria-hidden="true" className="led" />
           {dict.footer.builtWith}
         </p>
       </Reveal>

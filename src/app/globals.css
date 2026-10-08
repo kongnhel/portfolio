@@ -4,79 +4,72 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ---------------------------------------------------------------------------
-   Colour tokens.
-   Names are "surface/ink by strength", not literally "light"/"dark", so the
-   same utility works in both themes: bg-base-950 is always the page background,
+   Terminal / CRT design language.
+
+   Names are "surface/ink by strength", not literally "light/dark", so the same
+   utility works in both themes: bg-base-950 is always the page background,
    text-base-100 is always the primary text. Only the values swap below.
+
+   The look is a dark terminal by default with a light "paper" counterpart —
+   glass-free, hard 1px borders, square corners, and one loud accent.
    --------------------------------------------------------------------------- */
 
 :root {
   color-scheme: light;
 
-  /* Light theme */
-  --base-950: oklch(0.995 0.002 265); /* page background */
-  --base-900: oklch(0.975 0.003 265); /* cards, panels */
-  --base-850: oklch(0.955 0.004 265);
-  --base-800: oklch(0.895 0.005 265); /* borders, dividers */
-  --base-700: oklch(0.76 0.007 265); /* faint text, meta */
-  --base-500: oklch(0.5 0.011 265); /* secondary text */
-  --base-300: oklch(0.33 0.011 265); /* strong secondary text */
-  --base-100: oklch(0.16 0.008 265); /* primary text */
+  /* Light theme — a paper-terminal: warm-cool off-white with a cyan cast. */
+  --base-950: oklch(0.987 0.004 220); /* page background */
+  --base-900: oklch(0.968 0.006 220); /* panels, cards */
+  --base-850: oklch(0.944 0.008 220);
+  --base-800: oklch(0.876 0.011 224); /* borders, dividers */
+  --base-700: oklch(0.712 0.014 226); /* faint text, meta */
+  --base-500: oklch(0.508 0.017 228); /* secondary text */
+  --base-300: oklch(0.342 0.017 230); /* strong secondary text */
+  --base-100: oklch(0.194 0.018 234); /* primary text */
 
-  --accent: oklch(0.5 0.13 158);
-  --accent-muted: oklch(0.42 0.1 158);
-  /* Second hue for gradients and the ambient background layers, so the page is
-     not a single flat green. */
-  --accent-2: oklch(0.55 0.16 258);
-  --accent-3: oklch(0.6 0.15 32);
+  /* Electric cyan #22d3ee, darkened for contrast against a light page. */
+  --accent: oklch(0.55 0.118 227);
+  --accent-muted: oklch(0.47 0.1 227);
+  --accent-bright: oklch(0.72 0.13 227);
 
-  /* Geist first: it has no Khmer glyphs, so the browser skips it for Khmer and
-     lands on Kantumruy Pro for any Khmer that appears on an English page. */
-  --font-body: var(--font-geist-sans), var(--font-khmer), ui-sans-serif, system-ui,
-    sans-serif;
+  /* Secondary hues for the prompt, gradients and the ambient layers. */
+  --accent-2: oklch(0.62 0.19 340); /* magenta */
+  --accent-3: oklch(0.72 0.15 78); /* amber */
 
-  /* Khmer appended to the mono stack too: it has no monospace convention, so
-     Latin stays in Geist Mono while Khmer lands on Kantumruy instead of
-     falling through to a system font. */
-  --font-code: var(--font-geist-mono), var(--font-khmer), ui-monospace, monospace;
+  /* Bloom strength. Cyan needs help reading as a light source on near-black,
+     so dark mode raises this well above 1. */
+  --glow: 0 0 0 0 transparent;
+  --glow-soft: 0 0 0 0 transparent;
+
+  /* JetBrains Mono is the only family: it is the terminal voice of the whole
+     site. `--font-jetbrains` is set by next/font in the locale layout. */
+  --font-body: var(--font-jetbrains), ui-monospace, monospace;
+  --font-code: var(--font-jetbrains), ui-monospace, monospace;
 }
 
-/* On Khmer pages the Khmer font leads. Latin runs inside them (Python, HTML)
-   still fall through to Geist. */
-html[lang="km"] {
-  --font-body: var(--font-khmer), var(--font-geist-sans), ui-sans-serif, system-ui,
-    sans-serif;
-
-  /* Khmer stacks diacritics above consonants; the default 1.5 clips them. */
-  line-height: 1.7;
-}
-
-/* tracking-* utilities are sized for Latin. Positive tracking splits the Khmer
-   script into separate glyphs, and negative tracking collides stacked
-   diacritics — so neutralise them wherever they appear on a Khmer page.
-   (0,1,1) beats the utilities' (0,1,0). */
-html[lang="km"]
-  :where(h1, h2, h3, h4, .font-mono, [class*="tracking-"]) {
-  letter-spacing: normal;
-}
-
+/* Dark theme — the default look: deep blue-black screen, cyan phosphor. */
 .dark {
   color-scheme: dark;
 
-  /* Dark theme */
-  --base-950: oklch(0.15 0.008 265);
-  --base-900: oklch(0.192 0.009 265);
-  --base-850: oklch(0.225 0.01 265);
-  --base-800: oklch(0.275 0.011 265);
-  --base-700: oklch(0.365 0.012 265);
-  --base-500: oklch(0.6 0.014 265);
-  --base-300: oklch(0.8 0.012 265);
-  --base-100: oklch(0.94 0.008 265);
+  --base-950: oklch(0.145 0.021 245);
+  --base-900: oklch(0.187 0.023 244);
+  --base-850: oklch(0.224 0.024 243);
+  --base-800: oklch(0.302 0.026 240); /* borders, dividers */
+  --base-700: oklch(0.4 0.027 238); /* faint text, meta */
+  --base-500: oklch(0.615 0.028 236); /* secondary text */
+  --base-300: oklch(0.796 0.024 234); /* strong secondary text */
+  --base-100: oklch(0.945 0.014 232); /* primary text */
 
-  --accent: oklch(0.78 0.16 155);
-  --accent-muted: oklch(0.52 0.1 155);
-  --accent-2: oklch(0.72 0.14 268);
-  --accent-3: oklch(0.75 0.13 40);
+  --accent: oklch(0.82 0.115 210); /* lifted #22d3ee so it glows */
+  --accent-muted: oklch(0.68 0.1 215);
+  --accent-bright: oklch(0.92 0.09 205);
+
+  --accent-2: oklch(0.74 0.18 340);
+  --accent-3: oklch(0.82 0.15 80);
+
+  --glow: 0 0 18px -2px color-mix(in oklab, var(--accent) 55%, transparent);
+  --glow-soft: 0 0 32px -6px
+    color-mix(in oklab, var(--accent) 45%, transparent);
 }
 
 /* `inline` keeps var() references so the .dark overrides cascade at runtime. */
@@ -92,9 +85,16 @@ html[lang="km"]
 
   --color-accent: var(--accent);
   --color-accent-muted: var(--accent-muted);
+  --color-accent-2: var(--accent-2);
+  --color-accent-3: var(--accent-3);
 
   --font-sans: var(--font-body);
   --font-mono: var(--font-code);
+
+  /* Sharp corners are the point of the theme: the bare `rounded` utility
+     resolves to 0 so no component accidentally opts back into pill shapes.
+     `rounded-full` is a separate namespace and still gives true circles. */
+  --radius-DEFAULT: 0px;
 }
 
 @layer base {
@@ -109,6 +109,7 @@ html[lang="km"]
     background-color: var(--base-950);
     color: var(--base-100);
     font-family: var(--font-sans);
+    font-variant-ligatures: none;
 
     /* Creates a stacking context so the decorative layers below can sit at
        z-index:-1 — above the page background, beneath all content. */
@@ -124,28 +125,43 @@ html[lang="km"]
     z-index: -1;
   }
 
-  /* Faint technical grid, fading out below the fold. */
+  /* Two-tier schematic grid: fine cells for texture, heavy lines every fifth
+     cell for structure. Masked so it dissolves before it reaches the fold. */
   body::before {
     background-image:
       linear-gradient(
-        to right,
-        color-mix(in oklab, var(--base-800) 60%, transparent) 1px,
-        transparent 1px
-      ),
+          to right,
+          color-mix(in oklab, var(--base-800) 70%, transparent) 1px,
+          transparent 1px
+        ),
       linear-gradient(
-        to bottom,
-        color-mix(in oklab, var(--base-800) 60%, transparent) 1px,
-        transparent 1px
-      );
-    background-size: 72px 72px;
-    mask-image: radial-gradient(62rem 42rem at 50% 0%, black, transparent 78%);
+          to bottom,
+          color-mix(in oklab, var(--base-800) 70%, transparent) 1px,
+          transparent 1px
+        ),
+      linear-gradient(
+          to right,
+          color-mix(in oklab, var(--base-800) 100%, transparent) 1px,
+          transparent 1px
+        ),
+      linear-gradient(
+          to bottom,
+          color-mix(in oklab, var(--base-800) 100%, transparent) 1px,
+          transparent 1px
+        );
+    background-size:
+      28px 28px,
+      28px 28px,
+      140px 140px,
+      140px 140px;
+    mask-image: radial-gradient(70rem 48rem at 50% 0%, black, transparent 76%);
   }
 
-  /* Accent wash behind the hero, breathing very slowly. */
+  /* Phosphor haze behind the hero, breathing very slowly. */
   body::after {
     background: radial-gradient(
-      50rem 34rem at 50% -10rem,
-      color-mix(in oklab, var(--accent) 16%, transparent),
+      52rem 32rem at 50% -12rem,
+      color-mix(in oklab, var(--accent) 18%, transparent),
       transparent 68%
     );
     animation: glow-breathe 14s ease-in-out infinite;
@@ -160,14 +176,19 @@ html[lang="km"]
     outline: 2px solid var(--accent);
     outline-offset: 2px;
   }
+
+  /* Monospace body copy reads badly without a little extra leading. */
+  p {
+    line-height: 1.7;
+  }
 }
 
 /* ============================================================
    Ambient layers.
-   Three fixed, non-interactive layers behind the content:
-   the drifting aurora blobs, a film grain, and the spotlight that
-   follows the pointer. All are inside body's `isolation: isolate`
-   stacking context at z-index:-1, so they never intercept clicks.
+   Fixed, non-interactive layers behind the content: drifting colour
+   fields, a CRT refresh sweep, scanlines, film grain and a vignette.
+   All live inside body's `isolation: isolate` stacking context at
+   z-index:-1, so they never intercept clicks.
    ============================================================ */
 
 .ambient {
@@ -183,45 +204,45 @@ html[lang="km"]
 .aurora {
   position: absolute;
   border-radius: 9999px;
-  filter: blur(70px);
-  opacity: 0.55;
+  filter: blur(90px);
+  opacity: 0.5;
   will-change: transform;
 }
 
 .aurora-1 {
-  top: -18vh;
-  left: -10vw;
-  width: 46rem;
-  height: 46rem;
+  top: -22vh;
+  left: -12vw;
+  width: 44rem;
+  height: 44rem;
   background: radial-gradient(
     circle,
-    color-mix(in oklab, var(--accent) 42%, transparent),
+    color-mix(in oklab, var(--accent) 40%, transparent),
     transparent 68%
   );
   animation: aurora-a 26s ease-in-out infinite alternate;
 }
 
 .aurora-2 {
-  top: 22vh;
-  right: -14vw;
-  width: 40rem;
-  height: 40rem;
+  top: 26vh;
+  right: -16vw;
+  width: 38rem;
+  height: 38rem;
   background: radial-gradient(
     circle,
-    color-mix(in oklab, var(--accent-2) 38%, transparent),
+    color-mix(in oklab, var(--accent-2) 32%, transparent),
     transparent 70%
   );
   animation: aurora-b 32s ease-in-out infinite alternate;
 }
 
 .aurora-3 {
-  bottom: -22vh;
-  left: 24vw;
-  width: 44rem;
-  height: 44rem;
+  bottom: -24vh;
+  left: 22vw;
+  width: 40rem;
+  height: 40rem;
   background: radial-gradient(
     circle,
-    color-mix(in oklab, var(--accent-3) 26%, transparent),
+    color-mix(in oklab, var(--accent-3) 22%, transparent),
     transparent 70%
   );
   animation: aurora-c 38s ease-in-out infinite alternate;
@@ -229,24 +250,68 @@ html[lang="km"]
 
 /* In light mode the blobs need less opacity or they tint the text. */
 html:not(.dark) .aurora {
-  opacity: 0.4;
-  filter: blur(90px);
+  opacity: 0.22;
+  filter: blur(110px);
+}
+
+/* The CRT refresh bar: a bright horizontal band that falls once every few
+   seconds, exactly like the rolling refresh of an old monitor. */
+.sweep {
+  position: absolute;
+  inset-inline: 0;
+  height: 34vh;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    color-mix(in oklab, var(--accent) 7%, transparent) 55%,
+    color-mix(in oklab, var(--accent) 12%, transparent) 88%,
+    transparent
+  );
+  animation: crt-sweep 9s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+}
+
+/* Scanlines. `base-100` is dark in the light theme and near-white in dark, so
+   one expression darkens the light screen and brightens the dark one. */
+.scanlines {
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    color-mix(in oklab, var(--base-100) 7%, transparent) 0 1px,
+    transparent 1px 3px
+  );
+  opacity: 0.5;
+}
+
+html:not(.dark) .scanlines {
+  opacity: 0.9;
+}
+
+/* Corner falloff so panels at the edges of the screen sit in shadow. */
+.vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    120% 90% at 50% 40%,
+    transparent 55%,
+    color-mix(in oklab, var(--base-950) 75%, transparent)
+  );
 }
 
 /* Film grain: an inline SVG fractal noise, tiled. Keeps the flat gradients
-   from banding and gives the page a printed texture. */
+   from banding and gives the screen a printed texture. */
 .grain {
   position: fixed;
   inset: -50%;
   z-index: -1;
   pointer-events: none;
-  opacity: 0.05;
+  opacity: 0.045;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
   animation: grain-shift 6s steps(4) infinite;
 }
 
 html:not(.dark) .grain {
-  opacity: 0.035;
+  opacity: 0.03;
 }
 
 /* The "mouse hole": a soft accent spotlight that follows the cursor. Its
@@ -257,8 +322,8 @@ html:not(.dark) .grain {
   z-index: -1;
   pointer-events: none;
   background: radial-gradient(
-    22rem circle at var(--pointer-x, 50%) var(--pointer-y, 30%),
-    color-mix(in oklab, var(--accent) 15%, transparent),
+    20rem circle at var(--pointer-x, 50%) var(--pointer-y, 30%),
+    color-mix(in oklab, var(--accent) 13%, transparent),
     transparent 70%
   );
   opacity: 0;
@@ -283,9 +348,28 @@ html:not(.dark) .grain {
   position: relative;
   background-image: radial-gradient(
     15rem circle at var(--spot-x, 50%) var(--spot-y, 0%),
-    color-mix(in oklab, var(--accent) 13%, transparent),
+    color-mix(in oklab, var(--accent) 12%, transparent),
     transparent 65%
   );
+}
+
+/* ============================================================
+   Terminal primitives.
+   ============================================================ */
+
+/* Accent bloom. Applied to anything that should look like it is emitting. */
+.glow {
+  box-shadow: var(--glow);
+}
+
+.text-glow {
+  text-shadow: var(--glow);
+}
+
+/* Shell prompt prefix: `$ ` in the accent colour. */
+.prompt {
+  color: var(--accent);
+  user-select: none;
 }
 
 /* Gradient text for the one line that should feel like the brand. */
@@ -293,7 +377,7 @@ html:not(.dark) .grain {
   background-image: linear-gradient(
     100deg,
     var(--base-100) 0%,
-    color-mix(in oklab, var(--accent) 85%, var(--base-100)) 45%,
+    color-mix(in oklab, var(--accent) 80%, var(--base-100)) 45%,
     var(--accent-2) 100%
   );
   -webkit-background-clip: text;
@@ -310,11 +394,10 @@ html:not(.dark) .grain {
   content: "";
   position: absolute;
   inset: 0;
-  border-radius: inherit;
   padding: 1px;
   background: radial-gradient(
     12rem circle at var(--spot-x, 50%) var(--spot-y, 0%),
-    color-mix(in oklab, var(--accent) 70%, transparent),
+    color-mix(in oklab, var(--accent) 75%, transparent),
     transparent 60%
   );
   -webkit-mask:
@@ -330,6 +413,71 @@ html:not(.dark) .grain {
 .spot-border:hover::before,
 .spot-border:focus-within::before {
   opacity: 1;
+}
+
+/* Corner brackets, the site's one repeated motif. Four L-shaped hairlines
+   drawn with gradient borders so each arm fades out from its corner. */
+.brackets::before,
+.brackets::after {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  pointer-events: none;
+  border-color: var(--accent);
+  transition:
+    opacity 300ms ease,
+    inset 300ms ease;
+}
+
+.brackets::before {
+  inset: -1px auto auto -1px;
+  border-top-width: 1px;
+  border-left-width: 1px;
+}
+
+.brackets::after {
+  inset: auto -1px -1px auto;
+  border-bottom-width: 1px;
+  border-right-width: 1px;
+}
+
+.brackets:hover::before,
+.brackets:hover::after,
+.brackets:focus-within::before,
+.brackets:focus-within::after {
+  inset: -5px auto auto -5px;
+}
+
+.brackets:hover::after,
+.brackets:focus-within::after {
+  inset: auto -5px -5px auto;
+}
+
+/* Scanline sheen laid over a photo or image frame, tying the imagery into the
+   CRT language. Pair with .brackets. */
+.crt-image::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    color-mix(in oklab, var(--accent) 16%, transparent) 0 1px,
+    transparent 1px 3px
+  );
+  opacity: 0.55;
+}
+
+/* Status LED: a small dot that keeps a slow pulse, used next to live labels. */
+.led {
+  display: inline-block;
+  width: 0.5em;
+  height: 0.5em;
+  border-radius: 9999px;
+  background: var(--accent);
+  box-shadow: var(--glow);
+  animation: led-pulse 2.2s ease-in-out infinite;
 }
 
 /* ============================================================
@@ -390,6 +538,15 @@ html:not(.dark) .grain {
   }
   to {
     transform: scaleY(1);
+  }
+}
+
+@keyframes draw-right {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
   }
 }
 
@@ -505,6 +662,16 @@ html:not(.dark) .grain {
   }
 }
 
+@keyframes led-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
 /* Ambient background drift. Transforms only — no layout, no repaint. */
 @keyframes aurora-a {
   from {
@@ -530,6 +697,24 @@ html:not(.dark) .grain {
   }
   to {
     transform: translate3d(5vw, -7vh, 0) scale(1.15);
+  }
+}
+
+/* The refresh bar crosses the viewport, pauses, then restarts from the top. */
+@keyframes crt-sweep {
+  0% {
+    transform: translate3d(0, -40vh, 0);
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  82% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(0, 105vh, 0);
+    opacity: 0;
   }
 }
 
@@ -636,11 +821,12 @@ html.js [data-reveal][data-state="shown"][data-variant="left"] {
 .caret-blink::after {
   content: "";
   display: inline-block;
-  width: 0.5em;
+  width: 0.6em;
   height: 1em;
-  margin-left: 0.15em;
-  vertical-align: -0.12em;
+  margin-left: 0.12em;
+  vertical-align: -0.14em;
   background: currentColor;
+  box-shadow: var(--glow);
   animation: caret-blink 1.1s step-end infinite;
 }
 
@@ -709,13 +895,14 @@ html.js [data-reveal][data-state="shown"] .timeline-dot {
     calc(var(--reveal-delay, 0ms) + 200ms) both;
 }
 
-/* Sliding highlight behind the active nav item. */
+/* Sliding highlight behind the active nav item. Square, like everything else. */
 .nav-pill {
   position: absolute;
   top: 50%;
-  height: 28px;
-  border-radius: 8px;
-  background: color-mix(in oklab, var(--accent) 14%, transparent);
+  height: 30px;
+  border-radius: 2px;
+  background: color-mix(in oklab, var(--accent) 15%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--accent) 35%, transparent);
   pointer-events: none;
   transform: translateY(-50%);
   transition:
@@ -736,8 +923,9 @@ html.js [data-reveal][data-state="shown"] .timeline-dot {
   background: linear-gradient(
     to right,
     var(--accent),
-    color-mix(in oklab, var(--accent) 45%, transparent)
+    var(--accent-2)
   );
+  box-shadow: var(--glow);
 }
 
 /* Mobile menu: collapses on height without display:none, so it can animate.
@@ -773,7 +961,7 @@ html.js [data-reveal][data-state="shown"] .timeline-dot {
   background: conic-gradient(
     from 0deg,
     transparent 0deg,
-    color-mix(in oklab, var(--accent) 75%, transparent) 90deg,
+    color-mix(in oklab, var(--accent) 85%, transparent) 90deg,
     transparent 200deg
   );
   mask: radial-gradient(farthest-side, transparent calc(100% - 2px), black 0);
@@ -789,7 +977,7 @@ html.js [data-reveal][data-state="shown"] .timeline-dot {
   background-image: linear-gradient(
     115deg,
     transparent 15%,
-    color-mix(in oklab, var(--accent) 20%, transparent) 50%,
+    color-mix(in oklab, var(--accent) 18%, transparent) 50%,
     transparent 85%
   );
   background-size: 260% 100%;
@@ -806,29 +994,15 @@ html.js [data-reveal][data-state="shown"] .timeline-dot {
 
 .field:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 22%, transparent);
+  box-shadow:
+    0 0 0 1px var(--accent),
+    var(--glow-soft);
   outline: none;
 }
 
 /* Validation messages fade in rather than popping. */
 .error-in {
   animation: page-in 240ms ease-out both;
-}
-
-/* Light theme: keep the grid, but let the accent fields read as colour rather
-   than as stains over the text. */
-:root:not(.dark) body::before {
-  background-image:
-    linear-gradient(
-      to right,
-      color-mix(in oklab, var(--base-800) 85%, transparent) 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      to bottom,
-      color-mix(in oklab, var(--base-800) 85%, transparent) 1px,
-      transparent 1px
-    );
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -852,11 +1026,15 @@ html.js [data-reveal][data-state="shown"] .timeline-dot {
 
   /* The drifting fields have nothing to reveal without motion, so they are
      parked as static, very soft washes instead of being switched off. */
-  .aurora {
+  .aurora,
+  .sweep,
+  .grain {
     animation: none !important;
   }
 
-  .grain {
-    animation: none !important;
+  /* A frozen scanline pattern is just a texture; keep it, but a frozen
+     refresh bar is a bright band stuck across the content. */
+  .sweep {
+    display: none !important;
   }
 }

@@ -66,7 +66,7 @@ export function ThemeToggle({
       onClick={() => apply(next)}
       aria-label={label}
       title={label}
-      className="rounded p-1.5 text-base-500 transition-colors hover:text-accent"
+      className="border border-base-800 p-1.5 text-base-500 transition-colors hover:border-accent hover:text-accent"
     >
       {/* Keyed on the current theme so the icon spins in when it changes. */}
       <span key={theme} className="icon-swap block" aria-hidden="true">

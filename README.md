@@ -4,27 +4,31 @@ A personal portfolio built with Next.js (App Router), TypeScript and Tailwind CS
 It is a fully static export — no server, no database, no API keys — deployed to
 GitHub Pages by a GitHub Actions workflow.
 
-The site is available in **English and Khmer**, in **light and dark themes**.
+The design is a **terminal / CRT** interface: monospace throughout, square corners,
+hairline borders and one electric-cyan accent.
+
+The site is **English-only**, in **light and dark themes**.
 
 | Feature        | How it works                                                     |
 | -------------- | ---------------------------------------------------------------- |
-| Two languages  | URL-based, at `/en/...` and `/km/...`                            |
+| URL locale     | Every page lives under `/en/...`; any other prefix 404s          |
 | Two themes     | CSS custom properties, toggled in the header, remembered locally |
 
 ## URLs
 
-Every page lives under a language prefix:
+Every page lives under the language prefix:
 
 ```
 /en/            /en/projects/    /en/projects/<slug>/    /en/about/    /en/contact/
-/km/            /km/projects/    /km/projects/<slug>/    /km/about/    /km/contact/
 ```
 
-The language switcher in the header moves between the two, keeping you on the same
-page. Because the language is part of the URL rather than client-side state, each
-version is independently shareable and screen readers get the correct `lang`
-attribute. Each page also emits `hreflang` links (`en`, `km`, `x-default`) for
-search engines.
+`/` forwards to `/en/`. Because the language is part of the URL rather than
+client-side state, each page is independently shareable and screen readers get
+the correct `lang` attribute. Each page also emits `hreflang` links (`en` and
+`x-default`) for search engines.
+
+The locale plumbing is kept even though only English is registered — see
+[Adding a language](#adding-a-language) below.
 
 ## Getting started
 
@@ -50,105 +54,157 @@ when you update your details.
 | File                          | Contains                                    |
 | ----------------------------- | ------------------------------------------- |
 | `src/data/site.ts`            | Name, email, phone, social links, photo      |
-| `src/data/projects.ts`        | Projects, with `en` and `km` copy            |
-| `src/data/experience.ts`      | Bio, skills, education — with `en`/`km` copy |
+| `src/data/projects.ts`        | Projects, with copy nested per locale       |
+| `src/data/experience.ts`      | Bio, skills, education — copy per locale    |
 | `src/data/i18n/en.ts`         | All English interface text                  |
-| `src/data/i18n/km.ts`         | All Khmer interface text                    |
 
 Search the repo for `TODO` to find every placeholder left in place.
 
-### Translating
+### Adding a language
 
-**`en.ts` is the source of truth.** It defines the shape of the dictionary, and
-`km.ts` is typed as `Dictionary`, so if you add a string to `en.ts` and forget to
-translate it, `npm run typecheck` fails and tells you exactly where.
+The site ships English-only, but the locale plumbing is still in place so another
+language is a small addition:
 
-Adding a language (say Thai) means adding `"th" as const` to `locales` in
-`src/lib/i18n.ts`, creating `src/data/i18n/th.ts`, and adding the routes to
-`alternates.languages` in `src/lib/seo.ts`. `generateStaticParams` picks up new
-locales automatically.
+1. Add the code to `locales` and `localeMeta` in `src/lib/i18n.ts`, and a
+   `LanguageSwitcher` back into `src/components/site-header.tsx`
+   (`switchLocale` was removed with the switcher — restore it from git history or
+   just build the href from `localisedPath`).
+2. Create `src/data/i18n/<code>.ts` exporting a `Dictionary`, and return it from
+   `getDictionary` in `src/lib/i18n.ts`. Because the type is `typeof en`, an
+   untranslated key is a `npm run typecheck` error that names the exact path.
+3. Add a sibling `copy` entry to every project in `src/data/projects.ts`, every
+   `skillGroups` entry and `education`/`experience` entry in
+   `src/data/experience.ts`, and every `about.bio` / `about.facts` value. They
+   are typed `Record<Locale, …>`, so a missing locale fails to compile.
+4. Add the code to `alternates.languages` in `src/lib/seo.ts`. Next only emits
+   hreflang links from a statically analysable object literal, so this list is
+   written out by hand.
+5. If the script is not Latin, load a font for it in
+   `src/app/[locale]/layout.tsx` and prepend it to the `--font-body` /
+   `--font-code` chains in `src/app/globals.css`. Leave out any variable that is
+   not defined — an undefined `var()` reference invalidates the whole declaration.
+6. Add a link to the language on the root redirect (`src/app/page.tsx`) and on
+   the 404 page (`src/app/global-not-found.tsx`), which both render outside the
+   locale layout and hand-write their hreflang tags.
 
-> The Khmer translations were written from your CV and should be proofread by a
-> native speaker before you send the link to an employer — technical wording in
-> particular ("រូបនា" vs "រចនា", for example) is easy to get subtly wrong.
+Routes, the sitemap and `generateStaticParams` all follow `locales`
+automatically. Anything of yours that has Khmer text in a *screenshot* is fine —
+only text in the source is removed.
 
 ### Adding a project
 
-Append an entry to the array in `src/data/projects.ts`. Every project needs copy in
-both languages:
+Append an entry to the array in `src/data/projects.ts`. Every project needs copy
+for each registered locale:
 
 ```ts
 {
   slug: "my-project",            // unique, lowercase, hyphenated
   category: "software",          // "software" | "networking" | "design"
-  tags: ["TypeScript", "Go"],    // left untranslated in both languages
+  tags: ["TypeScript", "Go"],    // proper nouns, left untranslated
   year: 2026,
   featured: true,                // true to show on the home page
-  links: [{ label: "Source", href: "https://github.com/..." }],
+  links: [{ labelKey: "source", href: "https://github.com/..." }],
   copy: {
     en: { title: "…", summary: "…", description: ["…"], highlights: ["…"] },
-    km: { title: "…", summary: "…", description: ["…"], highlights: ["…"] },
   },
 }
 ```
 
-The detail page at `/en/projects/my-project` (and `/km/...`) plus its sitemap
-entries are generated automatically at build time.
+`labelKey` is a dictionary key (`liveSite` or `source`), not text, so the link
+label is translated with everything else.
+
+The detail page at `/en/projects/my-project` plus its sitemap entries are
+generated automatically at build time.
 
 ## Theming
 
-Colours are CSS custom properties in `src/app/globals.css`. Each token is declared
-twice — once under `:root` for light, once under `.dark` for dark:
+The design language is **terminal / CRT**: monospace throughout, square corners,
+1px borders, and one loud accent (electric cyan `#22d3ee`). Colours are CSS custom
+properties in `src/app/globals.css`. Each token is declared twice — once under
+`:root` for light, once under `.dark` for dark:
 
 ```css
-:root { --base-950: oklch(0.995 0.002 265); /* page background */ }
-.dark { --base-950: oklch(0.15  0.008 265); }
+:root { --base-950: oklch(0.987 0.004 220); /* page background */ }
+.dark { --base-950: oklch(0.145 0.021 245); }
 ```
 
 Names describe *strength*, not colour — `bg-base-950` is always the page
 background and `text-base-100` is always primary text. Only the values swap, so no
 component needs `dark:` variants. Change the values in both blocks to restyle the
-whole site; the accent is `--accent`.
+whole site.
+
+Beyond the `base-950…100` ramp:
+
+| Token                             | Purpose                                              |
+| --------------------------------- | ---------------------------------------------------- |
+| `--accent` / `--accent-muted`     | Cyan. Buttons, links, focus rings, the active nav.   |
+| `--accent-bright`                 | Hover state for accent text.                         |
+| `--accent-2` / `--accent-3`       | Magenta and amber, used by the window LEDs and gradient rules. |
+| `--glow` / `--glow-soft`          | Bloom shadows. Empty in light mode, lit in dark.     |
+
+### Style primitives
+
+Shared class names in `globals.css` keep the terminal look consistent:
+
+| Class                        | Effect                                                    |
+| ---------------------------- | --------------------------------------------------------- |
+| `.prompt`                    | Colours a `$` / `>` / `~/` prefix in the accent.          |
+| `.caret-blink`               | Blinking block cursor (`::after`).                         |
+| `.brackets`                  | Corner brackets on `::before` / `::after`, spreading on hover. |
+| `.crt-image`                 | Scanline sheen over a photo or screenshot.                 |
+| `.led`                       | Slow-pulsing status dot.                                   |
+| `.sweep` / `.scanlines` / `.vignette` | Ambient CRT layers, rendered by `src/components/ambient.tsx`. |
+
+`--radius-DEFAULT` is set to `0`, so the bare `rounded` utility resolves to sharp
+corners. Use `rounded-full` explicitly where a circle is actually wanted.
 
 The toggle writes `light` or `dark` to `localStorage`, and a small inline script
 applies it before first paint so the page never flashes the wrong theme. If the
 visitor has never chosen, it follows their OS setting.
 
-### Adding your photo
+### Favicon
 
-1. Save the photo into `public/`, e.g. `public/profile.jpg`.
-   A square image of at least 400×400 works best — it is displayed in a circle.
-2. Set `photoUrl: "/profile.jpg"` in `src/data/site.ts`.
+`src/app/favicon.ico` (16/32/48), `src/app/icon.png` (256) and
+`src/app/apple-icon.png` (128) are cut from the same photo as `site.photoUrl` and
+given a cyan ring and corner brackets. Next picks all three up as file-based
+metadata and applies `basePath` automatically, so they are declared nowhere in
+code.
 
-While `photoUrl` is `null`, the site shows an "NK" monogram instead, so nothing
-looks broken if you have not added the photo yet.
+### Photos
+
+`public/image/me/my style.png` is the single source for every image of you:
+
+| Output                            | Crop                        | Used by                      |
+| --------------------------------- | --------------------------- | ---------------------------- |
+| `public/image/me/profile.jpg`     | head and shoulders, 512×512 | `ProfilePhoto` — About page  |
+| `public/image/me/hero.jpg`        | 4:5, 720×900                | `HeroPortrait` — Home hero   |
+| `src/app/favicon.ico`, `icon.png`, `apple-icon.png` | tight on the face | browser / iOS tab icon |
+
+Regenerate all four together when the source photo changes. Set `photoUrl` to
+`null` in `src/data/site.ts` to fall back to the "NK" monogram instead.
 
 ## Typography
 
-Two font families are loaded in `src/app/[locale]/layout.tsx` and chained per
-language by `--font-body` in `src/app/globals.css`:
+One family is loaded in `src/app/[locale]/layout.tsx` and chained by
+`--font-body` / `--font-code` in `src/app/globals.css`:
 
-| Language | Stack                                             |
-| -------- | ------------------------------------------------- |
-| `en`     | Geist Sans → Kantumruy Pro → system sans          |
-| `km`     | Kantumruy Pro → Geist Sans → system sans          |
+```css
+--font-body: var(--font-jetbrains), ui-monospace, monospace;
+```
 
-Each font only carries the scripts it has glyphs for, so Latin inside a Khmer page
-(`Python`, `HTML`) skips Kantumruy and falls through to Geist, and vice versa.
-`--font-mono` carries the same chain so Khmer inside a `font-mono` element lands on
-Kantumruy instead of a system fallback.
+JetBrains Mono carries the whole site — it is the terminal voice the design is
+built around, and it has a generous x-height for reading at body sizes. It is
+loaded in three static weights (400/500/700) rather than as a variable font, so
+no reader ever waits on an extra download.
 
-Two rules exist purely because of how Khmer is written:
+`font-variant-ligatures: none` is set on `body`. Mono coding fonts turn `=>` and
+`!=` into arrows and ligatures that read as noise in prose.
 
-- `html[lang="km"] { line-height: 1.7 }` — Khmer stacks diacritics above the
-  consonant; the default 1.5 clips them.
-- `html[lang="km"] :where(h1, h2, h3, h4, .font-mono, [class*="tracking-"]) { letter-spacing: normal }`
-  — the `tracking-*` utilities are sized for Latin. Positive tracking splits Khmer
-  into visibly separated glyphs, negative tracking collides stacked diacritics.
-  The rule is unlayered, so it beats Tailwind's utilities without needing `!important`.
-
-Kantumruy Pro must be loaded with `weight: "variable"`; a numeric range such as
-`"100..700"` fails with `Unknown weight`.
+If you add a language with a non-Latin script, add its font to the layout and
+prepend it to both chains — see [Adding a language](#adding-a-language). Leave
+any variable you do not define out of the chain: a single undefined `var()`
+reference invalidates the whole declaration and `font-family` silently falls back
+to the inherited value.
 
 ## Deploying to GitHub Pages
 
@@ -194,9 +250,9 @@ Add a `CNAME` file in `public/` containing your domain, then set
 ## Notes
 
 - Your landing page is `/en/`. `src/app/page.tsx` is a small redirect page at the
-  site root that forwards `/` to `/en/`, with a link to the Khmer version. It uses
-  relative URLs, so it works unchanged under a `basePath` or a custom domain.
-  Edit that file to change which language `/` forwards to.
+  site root that forwards `/` to `/en/`. It uses relative URLs, so it works
+  unchanged under a `basePath` or a custom domain. Edit that file to change
+  which language `/` forwards to.
 - `public/.nojekyll` is required. Without it Pages runs Jekyll, which discards
   the `_next` directory and the site loses all its CSS and JavaScript.
 - The contact form validates in the browser and then opens the visitor's mail
@@ -205,3 +261,7 @@ Add a `CNAME` file in `public/` containing your domain, then set
   `src/components/contact-form.tsx`.
 - Images use `next/image` in unoptimised mode, which is what static export
   requires. Serve images through a CDN if you later need automatic resizing.
+- `src/app/icon.png`, `src/app/apple-icon.png` and `src/app/favicon.ico` are cut
+  from the same photo as `public/image/me/profile.jpg`. Next serves them as
+  file-based metadata, so replacing all four is the only step needed to change
+  the browser tab icon and the About-page portrait.

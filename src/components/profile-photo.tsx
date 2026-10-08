@@ -53,7 +53,7 @@ export function ProfilePhoto({
       <span aria-hidden="true" className="photo-ring" />
       <span
         aria-hidden="true"
-        className="absolute inset-0 rounded-full border border-accent/60 animate-ring"
+        className="animate-ring absolute inset-0 rounded-full border border-accent/60"
       />
       {inner}
     </div>

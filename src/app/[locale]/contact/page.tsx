@@ -24,12 +24,15 @@ export default async function ContactPage({ params }: { params: Params }) {
 
   return (
     <Container>
-      <PageHeader title={dict.contactPage.title} lede={dict.contactPage.lede} />
+      <PageHeader title={dict.contactPage.title} lede={dict.contactPage.lede} path="~/contact" />
 
       <div className="grid gap-12 pb-8 sm:grid-cols-[1fr_2fr]">
         {/* Direct details */}
         <Reveal as="div" variant="up" y={18} duration={750}>
           <h2 className="font-mono text-xs uppercase tracking-[0.2em] text-base-500">
+            <span aria-hidden="true" className="prompt">
+              ~${" "}
+            </span>
             {dict.contactPage.elsewhere}
           </h2>
 
@@ -40,7 +43,7 @@ export default async function ContactPage({ params }: { params: Params }) {
               </span>
               <a
                 href={`mailto:${site.email}`}
-                className="text-sm break-all text-accent hover:underline"
+                className="font-mono text-sm break-all text-accent hover:underline"
               >
                 {site.email}
               </a>
@@ -53,7 +56,7 @@ export default async function ContactPage({ params }: { params: Params }) {
                 </span>
                 <a
                   href={`tel:${site.phone.replace(/[^\d+]/g, "")}`}
-                  className="text-sm text-accent hover:underline"
+                  className="font-mono text-sm text-accent hover:underline"
                 >
                   {site.phone}
                 </a>
@@ -69,7 +72,7 @@ export default async function ContactPage({ params }: { params: Params }) {
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-accent hover:underline"
+                  className="font-mono text-sm break-all text-accent hover:underline"
                 >
                   {social.href.replace(/^https?:\/\/(www\.)?/, "")}
                 </a>
@@ -87,7 +90,8 @@ export default async function ContactPage({ params }: { params: Params }) {
           </ul>
 
           {dict.identity.availability ? (
-            <p className="mt-6 inline-block rounded border border-base-800 px-2.5 py-1 font-mono text-xs text-base-500">
+            <p className="mt-6 inline-flex max-w-full items-start gap-2 border border-base-800 px-2.5 py-1 font-mono text-xs text-base-500">
+              <span aria-hidden="true" className="led mt-1 shrink-0" />
               {dict.identity.availability}
             </p>
           ) : null}

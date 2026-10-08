@@ -57,7 +57,7 @@ export default async function HomePage({ params }: { params: Params }) {
                 y={26}
                 delay={170}
                 duration={850}
-                className="mt-3 text-4xl font-semibold tracking-tight text-balance sm:text-5xl"
+                className="mt-3 text-4xl font-bold tracking-tight text-balance text-gradient sm:text-5xl"
               >
                 {site.name}
               </Reveal>
@@ -152,19 +152,19 @@ export default async function HomePage({ params }: { params: Params }) {
         </Section>
       </Container>
 
-      {/* Contact CTA */}
+      {/* Contact CTA — a terminal window asking for input. */}
       <Container>
         <Reveal variant="scale" duration={800} className="mt-12">
-          <section className="relative overflow-hidden rounded border border-base-800 bg-base-900/40 px-6 py-10 text-center">
+          <section className="relative overflow-hidden border border-base-800 bg-base-900/40 px-6 py-10 text-center">
             <span
               aria-hidden="true"
               className="cta-wash pointer-events-none absolute inset-0"
             />
             <div className="relative">
-              <h2 className="text-xl font-semibold tracking-tight">
+              <h2 className="text-xl font-bold tracking-tight">
                 {dict.home.ctaTitle}
               </h2>
-              <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-base-500">
+              <p className="mx-auto mt-2 max-w-md font-mono text-sm leading-relaxed text-base-500">
                 {dict.home.ctaBody}
               </p>
               <div className="mt-6 flex flex-wrap justify-center gap-3">

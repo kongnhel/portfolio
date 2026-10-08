@@ -52,21 +52,28 @@ export default async function ProjectPage({ params }: { params: Params }) {
               aria-hidden="true"
               className="inline-block transition-transform duration-300 group-hover:-translate-x-1"
             >
-              ←{" "}
-            </span>
+              ←
+            </span>{" "}
             {dict.project.back}
           </Link>
         </Reveal>
 
         <Reveal as="div" variant="up" y={20} duration={800} delay={80}>
-          <div className="mt-6 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-            <span className="font-mono text-xs uppercase tracking-wider text-accent">
-              {dict.category[project.category]}
+          <div className="mt-6 flex flex-wrap items-baseline gap-x-2 gap-y-1 font-mono text-xs uppercase tracking-wider">
+            <span aria-hidden="true" className="text-base-500">
+              nhel@portfolio
             </span>
-            <span className="font-mono text-xs text-base-700">{project.year}</span>
+            <span aria-hidden="true" className="text-base-700">
+              :
+            </span>
+            <span className="text-accent">{dict.category[project.category]}</span>
+            <span aria-hidden="true" className="text-base-700">
+              ·
+            </span>
+            <span className="text-base-500">{project.year}</span>
           </div>
 
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
+          <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
             {project.title}
           </h1>
           <p className="mt-3 max-w-prose text-lg leading-relaxed text-base-500">
@@ -81,14 +88,16 @@ export default async function ProjectPage({ params }: { params: Params }) {
                   href={link.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group rounded border border-base-800 px-4 py-2 text-sm text-base-300 transition-all duration-300 hover:-translate-y-0.5 hover:border-accent/50 hover:text-accent"
+                  className="group inline-flex items-center gap-2 border border-base-800 px-4 py-2 font-mono text-sm text-base-300 transition-all duration-300 hover:-translate-y-0.5 hover:border-accent hover:text-accent"
                 >
+                  <span aria-hidden="true" className="prompt">
+                    &gt;
+                  </span>
                   {dict.project[link.labelKey]}
                   <span
                     aria-hidden="true"
                     className="inline-block transition-transform duration-300 group-hover:translate-x-1"
                   >
-                    {" "}
                     ↗
                   </span>
                 </a>
@@ -127,6 +136,9 @@ export default async function ProjectPage({ params }: { params: Params }) {
             <span className="flex items-center gap-3">
               <span aria-hidden="true" className="rule-in h-px w-6 bg-accent" />
               <h2 className="font-mono text-xs uppercase tracking-[0.2em] text-base-500">
+                <span aria-hidden="true" className="prompt">
+                  ~${" "}
+                </span>
                 {dict.project.screenshots}
               </h2>
             </span>
@@ -153,7 +165,7 @@ export default async function ProjectPage({ params }: { params: Params }) {
                       alt={shot.alt}
                       width={shot.width}
                       height={shot.height}
-                      className="w-full rounded border border-base-800 bg-base-900"
+                      className="crt-image w-full border border-base-800 bg-base-900"
                       // The first screenshot is the one a visitor sees first.
                       priority={index === 0}
                     />
@@ -175,6 +187,9 @@ export default async function ProjectPage({ params }: { params: Params }) {
             <span className="flex items-center gap-3">
               <span aria-hidden="true" className="rule-in h-px w-6 bg-accent" />
               <h2 className="font-mono text-xs uppercase tracking-[0.2em] text-base-500">
+                <span aria-hidden="true" className="prompt">
+                  ~${" "}
+                </span>
                 {dict.project.highlights}
               </h2>
             </span>
@@ -195,6 +210,9 @@ export default async function ProjectPage({ params }: { params: Params }) {
           <span className="flex items-center gap-3">
             <span aria-hidden="true" className="rule-in h-px w-6 bg-accent" />
             <h2 className="font-mono text-xs uppercase tracking-[0.2em] text-base-500">
+              <span aria-hidden="true" className="prompt">
+                ~${" "}
+              </span>
               {dict.project.builtWith}
             </h2>
           </span>
@@ -226,18 +244,18 @@ export default async function ProjectPage({ params }: { params: Params }) {
           <Reveal variant="up" y={14} duration={600}>
             <Link
               href={localisedPath(locale, `/projects/${prev.slug}`)}
-              className="group block h-full rounded border border-base-800 p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-accent/40 hover:bg-base-900"
+              className="group block h-full border border-base-800 p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-accent hover:bg-base-900"
             >
               <span className="font-mono text-xs text-base-700">
                 <span
                   aria-hidden="true"
                   className="inline-block transition-transform duration-300 group-hover:-translate-x-1"
                 >
-                  ←{" "}
-                </span>
+                  ←
+                </span>{" "}
                 {dict.project.previous}
               </span>
-              <span className="mt-1 block text-sm text-base-100 group-hover:text-accent">
+              <span className="mt-1 block font-mono text-sm text-base-100 group-hover:text-accent">
                 {prev.title}
               </span>
             </Link>
@@ -249,7 +267,7 @@ export default async function ProjectPage({ params }: { params: Params }) {
           <Reveal variant="up" y={14} duration={600} delay={90}>
             <Link
               href={localisedPath(locale, `/projects/${next.slug}`)}
-              className="group block h-full rounded border border-base-800 p-4 text-right transition-all duration-300 hover:-translate-y-0.5 hover:border-accent/40 hover:bg-base-900"
+              className="group block h-full border border-base-800 p-4 text-right transition-all duration-300 hover:-translate-y-0.5 hover:border-accent hover:bg-base-900"
             >
               <span className="font-mono text-xs text-base-700">
                 {dict.project.next}
@@ -261,7 +279,7 @@ export default async function ProjectPage({ params }: { params: Params }) {
                   →
                 </span>
               </span>
-              <span className="mt-1 block text-sm text-base-100 group-hover:text-accent">
+              <span className="mt-1 block font-mono text-sm text-base-100 group-hover:text-accent">
                 {next.title}
               </span>
             </Link>

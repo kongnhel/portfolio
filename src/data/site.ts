@@ -14,16 +14,23 @@ export const site = {
   resumeUrl: null as string | null,
 
   /**
-   * Round profile photo (Home avatar fallback, About page): a square crop of
-   * `public/image/me/my pic.png`, saved as `/public/image/me/profile.jpg`
-   * (512×512). Set to null to fall back to the monogram placeholder.
+   * Every image of you on the site is cut from one source photo:
+   * `public/image/me/my style.png` (1024×1536).
+   *
+   * Round profile photo (Home avatar fallback, About page): a head-and-shoulders
+   * square crop of it, saved as `/public/image/me/profile.jpg` (512×512). Set to
+   * null to fall back to the monogram placeholder.
+   *
+   * The same face, cropped tighter and framed with a cyan ring, is the browser
+   * icon — see `src/app/favicon.ico`, `src/app/icon.png` and
+   * `src/app/apple-icon.png`. Replace all four together when this changes.
    */
   photoUrl: "/image/me/profile.jpg" as string | null,
 
   /**
    * Larger portrait for the Home hero: `/public/image/me/hero.jpg` (720×900) is
-   * a 4:5 crop of `public/image/me/my style.png`. Falls back to `photoUrl` when
-   * null, so the hero is never empty.
+   * a 4:5 crop of the same `public/image/me/my style.png`. Falls back to
+   * `photoUrl` when null, so the hero is never empty.
    */
   heroPhotoUrl: "/image/me/hero.jpg" as string | null,
 
@@ -32,9 +39,9 @@ export const site = {
    * phone-based link (which only works if the number is in Telegram contacts).
    */
   socials: [
-    { label: "GitHub", href: "https://github.com/your-handle" },
+    { label: "GitHub", href: "https://github.com/kongnhel" },
     { label: "Telegram", href: "https://t.me/+85589204612" },
-    { label: "Facebook", href: "https://facebook.com/your-handle" },
+    { label: "Facebook", href: "https://facebook.com/kongxRom" },
   ],
 } as const;
 

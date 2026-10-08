@@ -9,7 +9,7 @@ export function Timeline({ entries }: { entries: ResolvedEntry[] }) {
       {/* Replaces the old border-l so the line can draw itself in. */}
       <span
         aria-hidden="true"
-        className="timeline-rail absolute top-0 bottom-0 left-0 w-px bg-base-800"
+        className="timeline-rail absolute top-0 bottom-0 left-0 w-px bg-linear-to-b from-accent via-base-800 to-transparent"
       />
 
       <ol className="relative space-y-8 pl-6">
@@ -25,18 +25,18 @@ export function Timeline({ entries }: { entries: ResolvedEntry[] }) {
           >
             <span
               aria-hidden="true"
-              className="timeline-dot absolute top-1.5 -left-[1.9rem] size-2.5 rounded-full border-2 border-base-950 bg-accent"
+              className="timeline-dot absolute top-1.5 -left-[1.9rem] size-2.5 border-2 border-base-950 bg-accent shadow-[0_0_10px_-1px_var(--accent)]"
             />
             <p className="font-mono text-xs uppercase tracking-wider text-base-700">
               {entry.period}
             </p>
-            <h3 className="mt-1 font-medium text-base-100">{entry.title}</h3>
-            <p className="text-sm text-accent/80">{entry.organisation}</p>
+            <h3 className="mt-1 font-bold text-base-100">{entry.title}</h3>
+            <p className="text-sm text-accent">{entry.organisation}</p>
             <ul className="mt-2 space-y-1.5">
               {entry.points.map((point) => (
                 <li
                   key={point}
-                  className="text-sm leading-relaxed text-base-500 before:mr-2 before:text-base-700 before:content-['—']"
+                  className="text-sm leading-relaxed text-base-500 before:mr-2 before:text-accent before:content-['-']"
                 >
                   {point}
                 </li>

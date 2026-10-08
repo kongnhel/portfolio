@@ -47,7 +47,6 @@ export function pageMetadata(
       // hreflang links from a statically analysable object literal.
       languages: {
         en: absoluteUrl("en", path),
-        km: absoluteUrl("km", path),
         "x-default": absoluteUrl(defaultLocale, path),
       },
     },

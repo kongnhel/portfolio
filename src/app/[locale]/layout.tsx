@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
-import { Geist, Geist_Mono, Kantumruy_Pro } from "next/font/google";
+import { JetBrains_Mono } from "next/font/google";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Ambient } from "@/components/ambient";
@@ -12,24 +12,12 @@ import { siteUrl } from "@/lib/seo";
 import { themeScript } from "@/lib/theme";
 import "../globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// JetBrains Mono carries the whole site: it is the terminal voice the design
+// is built around, and it has a generous x-height for reading at body sizes.
+const jetbrains = JetBrains_Mono({
+  variable: "--font-jetbrains",
   subsets: ["latin"],
-  display: "swap",
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-// Geist has no Khmer glyphs, so Khmer text fell back to whatever the OS picked.
-// Kantumruy Pro covers the `khmer` subset and is built for reading at UI sizes.
-const khmer = Kantumruy_Pro({
-  variable: "--font-khmer",
-  subsets: ["khmer", "latin"],
-  weight: "variable",
+  weight: ["400", "500", "700"],
   display: "swap",
 });
 
@@ -54,8 +42,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#fafafa" },
-    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
+    { media: "(prefers-color-scheme: light)", color: "#f8fafc" },
+    { media: "(prefers-color-scheme: dark)", color: "#05070f" },
   ],
   colorScheme: "light dark",
 };
@@ -81,7 +69,7 @@ export default async function LocaleLayout({
       // here; the class itself is preserved (React does not reconcile attributes
       // it did not render).
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} ${khmer.variable} h-full scroll-pt-20 antialiased`}
+      className={`${jetbrains.variable} h-full scroll-pt-20 antialiased`}
     >
       <head>
         {/* Applies the stored theme before first paint to avoid a flash. */}

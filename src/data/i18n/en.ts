@@ -1,5 +1,6 @@
-// This file defines the Dictionary shape. `km.ts` must match it exactly, so
-// adding a key here is a compile error until it is translated.
+// This file defines the Dictionary shape. It is the only locale today; any
+// locale added later is typed as `Dictionary`, so a missing key is a compile
+// error until it is translated.
 export const en = {
   nav: {
     home: "Home",
@@ -12,11 +13,6 @@ export const en = {
     toggleLabel: "Switch theme",
     light: "Switch to light theme",
     dark: "Switch to dark theme",
-  },
-
-  language: {
-    label: "Language",
-    switchTo: "Switch to Khmer",
   },
 
   a11y: {
@@ -124,5 +120,7 @@ export const en = {
     title: "Page not found",
     description:
       "That page doesn't exist. It may have been moved, or the link may be out of date.",
+    /** Link below the nav, in place of what used to be a language switch. */
+    contactPrompt: "Think this is a mistake? Get in touch →",
   },
 };

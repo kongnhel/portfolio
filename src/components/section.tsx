@@ -34,13 +34,22 @@ export function Section({
           duration={600}
           className="mb-6 flex items-baseline justify-between gap-4"
         >
-          <span className="flex items-center gap-3">
-            <span aria-hidden="true" className="rule-in h-px w-6 bg-accent" />
-            <h2 className="font-mono text-xs uppercase tracking-[0.2em] text-base-500">
+          <span className="flex min-w-0 flex-1 items-center gap-3">
+            <span aria-hidden="true" className="rule-in h-px w-6 shrink-0 bg-accent" />
+            {/* Reads as a shell command rather than a page-heading label. */}
+            <h2 className="truncate font-mono text-xs uppercase tracking-[0.2em] text-base-500">
+              <span aria-hidden="true" className="prompt">
+                ~${" "}
+              </span>
               {title}
             </h2>
+            {/* Hairline that fills the rest of the row, like a ruled editor. */}
+            <span
+              aria-hidden="true"
+              className="rule-in hidden h-px flex-1 bg-base-800 sm:block"
+            />
           </span>
-          {action}
+          {action ? <div className="shrink-0">{action}</div> : null}
         </Reveal>
       ) : null}
       {reveal ? (
@@ -73,14 +82,24 @@ export function Container({
 export function PageHeader({
   title,
   lede,
+  path,
 }: {
   title: string;
   lede?: string;
+  /** Route breadcrumb shown above the title, e.g. "/projects". */
+  path?: string;
 }) {
   return (
     <div className="pt-16 pb-4">
       <Reveal as="div" variant="up" y={14} duration={650}>
-        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+        <p aria-hidden="true" className="font-mono text-xs text-base-700">
+          <span className="prompt">nhel@portfolio</span>
+          <span className="text-base-500">:</span>
+          <span className="text-accent">{path ?? "~"}</span>
+          <span className="text-base-500">$</span>
+          <span className="caret-blink ml-0.5" />
+        </p>
+        <h1 className="mt-2 text-3xl font-bold tracking-tight text-balance sm:text-4xl">
           {title}
         </h1>
       </Reveal>
@@ -95,7 +114,7 @@ export function PageHeader({
   );
 }
 
-/** Pill used for tags, categories, and skills. */
+/** Pill used for tags, categories, and skills. Square, like everything else. */
 export function Tag({
   children,
   className,
@@ -106,12 +125,52 @@ export function Tag({
   return (
     <span
       className={cn(
-        "inline-block rounded border border-base-800 px-2 py-0.5 font-mono text-xs text-base-500 transition-all duration-300 hover:-translate-y-0.5 hover:border-accent/50 hover:text-accent",
+        "inline-block border border-base-800 bg-base-900/60 px-2 py-0.5 font-mono text-xs text-base-500 transition-all duration-300 hover:-translate-y-0.5 hover:border-accent/60 hover:bg-accent/10 hover:text-accent",
         className,
       )}
     >
       {children}
     </span>
+  );
+}
+
+/**
+ * Window chrome for a block of content: a title bar with three status LEDs and
+ * a `title` label, then the body. Purely decorative — pass `title` for the
+ * accessible name or leave it off for a plain framed block.
+ */
+export function TerminalPanel({
+  title,
+  children,
+  className,
+  bodyClassName,
+}: {
+  title?: string;
+  children: ReactNode;
+  className?: string;
+  bodyClassName?: string;
+}) {
+  return (
+    <div
+      className={cn(
+        "relative border border-base-800 bg-base-900/40",
+        className,
+      )}
+    >
+      {title ? (
+        <div className="flex items-center gap-3 border-b border-base-800 bg-base-950/60 px-3 py-2">
+          <span aria-hidden="true" className="flex items-center gap-1.5">
+            <span className="size-2 bg-accent-2/80" />
+            <span className="size-2 bg-accent-3/80" />
+            <span className="size-2 bg-accent/80" />
+          </span>
+          <span className="truncate font-mono text-xs text-base-700">
+            {title}
+          </span>
+        </div>
+      ) : null}
+      <div className={cn("p-5", bodyClassName)}>{children}</div>
+    </div>
   );
 }
 
@@ -129,15 +188,18 @@ export function LinkButton({
   external?: boolean;
 }) {
   const classes = cn(
-    "group/btn sheen inline-flex items-center gap-2 rounded px-4 py-2 text-sm font-medium transition-all duration-300",
+    "group/btn sheen inline-flex items-center gap-2 border px-4 py-2 font-mono text-sm font-medium transition-all duration-300",
     "hover:-translate-y-0.5",
     variant === "primary"
-      ? "bg-accent text-base-950 shadow-lg shadow-accent/0 hover:bg-accent/85 hover:shadow-accent/30"
-      : "border border-base-800 text-base-300 hover:border-base-700 hover:text-accent",
+      ? "border-accent bg-accent text-base-950 hover:shadow-[0_0_22px_-4px_var(--accent)]"
+      : "border-base-800 text-base-300 hover:border-accent hover:bg-accent/10 hover:text-accent",
   );
 
   const label = (
     <>
+      <span aria-hidden="true" className="prompt">
+        &gt;
+      </span>
       {children}
       <span
         aria-hidden="true"

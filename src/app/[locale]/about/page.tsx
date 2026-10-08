@@ -31,13 +31,13 @@ export default async function AboutPage({ params }: { params: Params }) {
 
   return (
     <Container>
-      <PageHeader title={dict.aboutPage.title} />
+      <PageHeader title={dict.aboutPage.title} path="~/about" />
 
       {/* Bio */}
       <Section>
         <div className="flex flex-col gap-8 sm:flex-row sm:gap-10">
           <div className="shrink-0">
-            <ProfilePhoto size={128} />
+            <ProfilePhoto size={128} ring />
           </div>
 
           <div className="max-w-prose space-y-4 leading-relaxed text-base-300">
@@ -51,9 +51,14 @@ export default async function AboutPage({ params }: { params: Params }) {
           {about.facts.map((fact) => (
             <div key={fact.key}>
               <dt className="font-mono text-xs uppercase tracking-wider text-base-700">
+                <span aria-hidden="true" className="prompt">
+                  #{" "}
+                </span>
                 {dict.facts[fact.key]}
               </dt>
-              <dd className="mt-1 text-sm text-base-300">{fact.value[locale]}</dd>
+              <dd className="mt-1 font-mono text-sm text-base-300">
+                {fact.value[locale]}
+              </dd>
             </div>
           ))}
         </dl>
@@ -66,7 +71,7 @@ export default async function AboutPage({ params }: { params: Params }) {
             const copy = group.copy[locale];
             return (
               <div key={copy.title}>
-                <h3 className="text-sm font-medium text-base-100">
+                <h3 className="font-mono text-sm font-medium text-accent">
                   {copy.title}
                 </h3>
                 <ul className="mt-3 flex flex-wrap gap-1.5">
@@ -99,8 +104,9 @@ export default async function AboutPage({ params }: { params: Params }) {
         <Section title={dict.aboutPage.resume}>
           <a
             href={site.resumeUrl}
-            className="inline-flex items-center gap-2 rounded border border-base-800 px-4 py-2 text-sm text-base-300 transition-colors hover:border-base-700 hover:text-accent"
+            className="inline-flex items-center gap-2 border border-base-800 px-4 py-2 font-mono text-sm text-base-300 transition-colors hover:border-accent hover:text-accent"
           >
+            <span aria-hidden="true">&gt; </span>
             {dict.aboutPage.downloadPdf} ↓
           </a>
         </Section>

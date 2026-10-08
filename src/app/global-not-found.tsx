@@ -11,7 +11,7 @@ import "./globals.css";
  *
  * Next picks this file up automatically and writes it to `out/404.html`,
  * replacing its own unstyled default — so this is the one page every miss on a
- * static host shows, in either language, and it therefore links both.
+ * static host shows.
  */
 
 const base = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
@@ -39,14 +39,27 @@ export default function GlobalNotFound() {
         {/* Colours the page before first paint, same as the locale layout. */}
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body className="flex min-h-screen flex-col items-center justify-center bg-base-950 px-6 py-16 text-base-100 antialiased">
-        <main className="page-enter w-full max-w-md">
-          <p className="font-mono text-6xl font-medium text-accent">
+      <body className="flex min-h-screen flex-col items-center justify-center bg-base-950 px-6 py-16 font-mono text-base-100 antialiased">
+        <main className="page-enter w-full max-w-md border border-base-800 bg-base-900/40 p-6">
+          <p className="font-mono text-xs text-base-700">
+            <span aria-hidden="true" className="prompt">
+              nhel@portfolio
+            </span>
+            <span aria-hidden="true" className="text-base-500">
+              :~$ cd
+            </span>{" "}
+            <span aria-hidden="true" className="text-red-400">
+              /{dict.notFound.title.toLowerCase().replace(/\s+/g, "-")}
+            </span>
+            <span aria-hidden="true" className="caret-blink ml-0.5" />
+          </p>
+
+          <p className="mt-4 font-mono text-6xl font-bold text-accent text-glow">
             {/* Float sits on its own node: two animations share the `animation`
                 shorthand and would collide on the same element. */}
             <span className="animate-float inline-block">404</span>
           </p>
-          <h1 className="mt-3 text-3xl font-semibold tracking-tight">
+          <h1 className="mt-3 text-3xl font-bold tracking-tight">
             {dict.notFound.title}
           </h1>
           <p className="mt-3 leading-relaxed text-base-500">
@@ -59,8 +72,11 @@ export default function GlobalNotFound() {
                 <li key={path}>
                   <a
                     href={href}
-                    className="inline-block rounded border border-base-800 px-3 py-1.5 text-sm text-base-300 transition-all duration-300 hover:-translate-y-0.5 hover:border-accent/50 hover:text-accent"
+                    className="inline-flex items-center gap-2 border border-base-800 px-3 py-1.5 font-mono text-sm text-base-300 transition-all duration-300 hover:-translate-y-0.5 hover:border-accent hover:text-accent"
                   >
+                    <span aria-hidden="true" className="prompt">
+                      &gt;
+                    </span>
                     {label}
                   </a>
                 </li>
@@ -68,13 +84,12 @@ export default function GlobalNotFound() {
             </ul>
           </nav>
 
-          <p className="mt-8 text-sm text-base-700">
+          <p className="mt-8 border-t border-base-800 pt-4 text-sm text-base-700">
             <a
-              href={`${base}/km/`}
-              lang="km"
+              href={`${base}/en/contact/`}
               className="text-accent transition-colors hover:text-accent-muted"
             >
-              ភាសាខ្មែរ
+              {dict.notFound.contactPrompt}
             </a>
           </p>
         </main>

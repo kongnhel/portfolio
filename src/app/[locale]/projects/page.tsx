@@ -25,7 +25,7 @@ export default async function ProjectsPage({ params }: { params: Params }) {
 
   return (
     <Container>
-      <PageHeader title={dict.projectsPage.title} lede={dict.projectsPage.lede} />
+      <PageHeader title={dict.projectsPage.title} lede={dict.projectsPage.lede} path="~/projects" />
 
       {sorted.length > 0 ? (
           <div className="grid gap-4 pb-8 sm:grid-cols-2">
@@ -40,11 +40,9 @@ export default async function ProjectsPage({ params }: { params: Params }) {
             ))}
           </div>
       ) : (
-        <p className="pb-8 text-base-500">
+        <p className="pb-8 font-mono text-base-500">
           {dict.projectsPage.empty}{" "}
-          <code className="font-mono text-sm text-accent">
-            {dict.projectsPage.addSome}
-          </code>
+          <code className="text-sm text-accent">{dict.projectsPage.addSome}</code>
         </p>
       )}
     </Container>
