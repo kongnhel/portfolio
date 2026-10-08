@@ -1,12 +1,20 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Reveal } from "./reveal";
-import { Tag } from "./section";
-import { cn } from "@/lib/utils";
 import type { ResolvedProject } from "@/data/projects";
 import type { Dictionary } from "@/lib/i18n";
 import { localisedPath, type Locale } from "@/lib/i18n";
 
+/**
+ * One row of the project listing, styled as terminal `ls` output: a fixed-width
+ * index column, the title, then its metadata indented underneath, and a small
+ * screenshot thumbnail.
+ *
+ * The whole row is a single link, so the click target is the full row rather
+ * than just the title. Only the category and title are read out — the index,
+ * year, summary, tags and thumbnail are `aria-hidden` so the link's accessible
+ * name stays short. The summary and tags are repeated on the detail page.
+ */
 export function ProjectCard({
   project,
   locale,
@@ -16,100 +24,88 @@ export function ProjectCard({
   project: ResolvedProject;
   locale: Locale;
   dict: Dictionary;
-  /** Position in the list, used to stagger a group of cards. */
+  /** Position in the list, used to stagger a group of rows. */
   index?: number;
 }) {
   return (
     <Reveal
-      as="article"
       variant="up"
-      y={24}
-      duration={700}
-      delay={(index % 4) * 90}
-      spotlight
-      className="group spot-border relative flex flex-col border border-base-800 bg-base-900/40 transition-all duration-400 hover:border-accent/50 hover:bg-base-900 hover:shadow-[0_0_28px_-10px_var(--accent)]"
+      y={14}
+      duration={550}
+      // Capped so a long listing does not leave the last rows waiting.
+      delay={Math.min(index, 6) * 55}
+      className="group relative"
     >
-      {/* Accent line that sweeps across the top edge on hover. */}
-      <span
-        aria-hidden="true"
-        className="absolute inset-x-0 top-0 z-20 h-px origin-left scale-x-0 bg-accent transition-transform duration-500 ease-out group-hover:scale-x-100"
-      />
+      <Link
+        href={localisedPath(locale, `/projects/${project.slug}`)}
+        className="flex items-start gap-3 px-2 py-5 transition-colors duration-200 hover:bg-base-900/70 sm:gap-5 sm:px-4"
+      >
+        {/* Accent bar that grows down the left edge on hover. */}
+        <span
+          aria-hidden="true"
+          className="absolute inset-y-0 left-0 w-0.5 origin-top scale-y-0 bg-accent transition-transform duration-300 ease-out group-hover:scale-y-100"
+        />
 
-      {/* Window chrome: status LEDs on the left, category and year on the right. */}
-      <div className="flex items-center gap-3 border-b border-base-800 bg-base-950/60 px-4 py-2">
-        <span aria-hidden="true" className="flex items-center gap-1.5">
-          <span className="size-1.5 bg-accent-2/80" />
-          <span className="size-1.5 bg-accent-3/80" />
-          <span className="size-1.5 bg-accent/80" />
+        {/* Index column, aligned across every row so the list reads as a table. */}
+        <span
+          aria-hidden="true"
+          className="w-6 shrink-0 pt-0.5 text-right font-mono text-xs text-base-700 tabular-nums transition-colors group-hover:text-accent sm:w-8"
+        >
+          {String(index + 1).padStart(2, "0")}
         </span>
-        <span className="truncate font-mono text-xs uppercase tracking-wider text-accent">
-          {dict.category[project.category]}
-        </span>
-        <span className="ml-auto shrink-0 font-mono text-xs text-base-700">
-          {project.year}
-        </span>
-      </div>
 
-      {/* Thumbnail: the first screenshot, cropped to a banner shape. */}
-      {project.shots[0] ? (
-        <div className="relative mb-5 overflow-hidden border-b border-base-800">
-          <Image
-            src={project.shots[0].src}
-            alt=""
-            width={project.shots[0].width}
-            height={project.shots[0].height}
-            className={cn(
-              "h-32 w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105",
-              // A tall phone screenshot shows its middle; a wide one its top.
-              project.shots[0].height > project.shots[0].width * 1.4
-                ? "object-center"
-                : "object-top",
-            )}
-            // The card thumbnail is decorative; the title beside it is the
-            // accessible name, and the detail page carries the real alt text.
-            aria-hidden="true"
-          />
-          {/* Fades the bottom edge into the panel and lays a faint scanline
-              sheen over the shot so it matches the rest of the screen. */}
-          <span
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 bg-gradient-to-t from-base-900 via-base-900/30 to-transparent"
-          />
-          <span aria-hidden="true" className="crt-image pointer-events-none absolute inset-0" />
-        </div>
-      ) : null}
-
-      <div className="flex flex-1 flex-col p-5 pt-4">
-        <h3 className="text-lg font-bold tracking-tight text-base-100 transition-colors duration-300 group-hover:text-accent">
-          <Link href={localisedPath(locale, `/projects/${project.slug}`)}>
-            {/* Stretched link makes the whole card clickable while keeping
-                accessible link text. */}
-            <span className="absolute inset-0 z-10" aria-hidden="true" />
+        <span className="min-w-0 flex-1">
+          <h3 className="text-base font-bold tracking-tight text-base-100 transition-colors duration-200 group-hover:text-accent">
             {project.title}
-          </Link>
-        </h3>
+          </h3>
 
-        <p className="mt-2 flex-1 text-sm leading-relaxed text-base-500">
-          {project.summary}
-        </p>
+          <p className="mt-1.5 font-mono text-xs text-base-700">
+            <span className="uppercase tracking-wider text-accent">
+              {dict.category[project.category]}
+            </span>
+            <span aria-hidden="true" className="px-2 text-base-800">
+              ·
+            </span>
+            {project.year}
+          </p>
 
-        <div className="mt-4 flex items-end justify-between gap-3 border-t border-base-800 pt-4">
-          <ul className="flex flex-wrap gap-1.5">
-            {project.tags.slice(0, 4).map((tag) => (
-              <li key={tag}>
-                <Tag>{tag}</Tag>
-              </li>
-            ))}
-          </ul>
+          <p
+            aria-hidden="true"
+            className="mt-2 max-w-prose text-sm leading-relaxed text-base-500 line-clamp-2"
+          >
+            {project.summary}
+          </p>
 
+          <p aria-hidden="true" className="mt-2 font-mono text-xs text-base-700">
+            {project.tags.join("  ·  ")}
+          </p>
+        </span>
+
+        {/* Thumbnail: the first screenshot, cropped to a small preview. */}
+        {project.shots[0] ? (
           <span
             aria-hidden="true"
-            className="translate-x-0 text-base-700 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:text-accent group-hover:opacity-100 sm:-translate-x-2"
+            className="relative hidden h-16 w-24 shrink-0 overflow-hidden border border-base-800 transition-colors duration-300 group-hover:border-accent/50 sm:block"
           >
-            →
+            <Image
+              src={project.shots[0].src}
+              alt=""
+              width={project.shots[0].width}
+              height={project.shots[0].height}
+              className="h-full w-full object-cover"
+            />
+            {/* No scanline sheen here: at 96px the 3px lines turn the preview to
+                mush. The full-size shots on the detail page still carry it. */}
           </span>
-        </div>
-      </div>
+        ) : null}
+
+        <span
+          aria-hidden="true"
+          className="shrink-0 pt-0.5 text-base-700 transition-all duration-300 group-hover:translate-x-1 group-hover:text-accent"
+        >
+          →
+        </span>
+      </Link>
     </Reveal>
   );
 }

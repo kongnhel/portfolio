@@ -342,17 +342,6 @@ html:not(.dark) .grain {
   }
 }
 
-/* Per-card spotlight. The hovered card gets --spot-x/--spot-y from the same
-   pointer listener, so the highlight tracks the cursor inside that card. */
-[data-spotlight] {
-  position: relative;
-  background-image: radial-gradient(
-    15rem circle at var(--spot-x, 50%) var(--spot-y, 0%),
-    color-mix(in oklab, var(--accent) 12%, transparent),
-    transparent 65%
-  );
-}
-
 /* ============================================================
    Terminal primitives.
    ============================================================ */
@@ -383,36 +372,6 @@ html:not(.dark) .grain {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-}
-
-/* Gradient hairline used on hoverable cards. */
-.spot-border {
-  position: relative;
-}
-
-.spot-border::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  padding: 1px;
-  background: radial-gradient(
-    12rem circle at var(--spot-x, 50%) var(--spot-y, 0%),
-    color-mix(in oklab, var(--accent) 75%, transparent),
-    transparent 60%
-  );
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  opacity: 0;
-  transition: opacity 350ms ease;
-  pointer-events: none;
-}
-
-.spot-border:hover::before,
-.spot-border:focus-within::before {
-  opacity: 1;
 }
 
 /* Corner brackets, the site's one repeated motif. Four L-shaped hairlines

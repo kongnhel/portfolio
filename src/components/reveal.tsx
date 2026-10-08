@@ -18,8 +18,6 @@ interface RevealProps {
   className?: string;
   style?: CSSProperties;
   id?: string;
-  /** Opt into the cursor spotlight (see globals.css `[data-spotlight]`). */
-  spotlight?: boolean;
 }
 
 /**
@@ -44,7 +42,6 @@ export function Reveal({
   className,
   style,
   id,
-  spotlight = false,
 }: RevealProps) {
   const ref = useRef<HTMLElement | null>(null);
 
@@ -84,7 +81,6 @@ export function Reveal({
       id={id}
       data-reveal=""
       data-variant={variant}
-      data-spotlight={spotlight ? "" : undefined}
       className={className}
       style={{
         ...style,

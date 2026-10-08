@@ -3,13 +3,10 @@
 import { useEffect, useRef } from "react";
 
 /**
- * The "mouse hole": a soft accent spotlight that follows the cursor, plus a
- * matching highlight inside whichever card is under it.
+ * The "mouse hole": a soft accent spotlight that follows the cursor.
  *
- * One passive listener writes two CSS custom properties on <html> (page
- * spotlight) and two on the hovered `[data-spotlight]` element (card
- * spotlight) — the stylesheet does the rest, so no component re-renders while
- * the pointer moves.
+ * One passive listener writes two CSS custom properties on <html> and the
+ * stylesheet does the rest, so nothing re-renders while the pointer moves.
  *
  * Everything is skipped on touch devices and under `prefers-reduced-motion`,
  * where a light source chasing the pointer is either impossible or unwelcome.
@@ -37,25 +34,9 @@ export function PointerGlow() {
 
     let frame = 0;
     let queued: { x: number; y: number } | null = null;
-    let lit: HTMLElement | null = null;
 
     const onMove = (event: PointerEvent) => {
       queued = { x: event.clientX, y: event.clientY };
-
-      const card = (event.target as Element | null)?.closest?.(
-        "[data-spotlight]",
-      ) as HTMLElement | null;
-
-      if (card !== lit) {
-        lit?.removeAttribute("data-spot-lit");
-        card?.setAttribute("data-spot-lit", "");
-        lit = card;
-      }
-      if (card) {
-        const box = card.getBoundingClientRect();
-        card.style.setProperty("--spot-x", `${event.clientX - box.left}px`);
-        card.style.setProperty("--spot-y", `${event.clientY - box.top}px`);
-      }
 
       if (frame) return;
       frame = requestAnimationFrame(() => {
@@ -76,8 +57,6 @@ export function PointerGlow() {
     const onLeave = () => {
       document.documentElement.style.removeProperty("--pointer-x");
       document.documentElement.style.removeProperty("--pointer-y");
-      lit?.removeAttribute("data-spot-lit");
-      lit = null;
       layer.classList.remove("is-active");
     };
 

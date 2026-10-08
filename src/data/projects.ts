@@ -146,7 +146,7 @@ export const projects: Project[] = [
     tags: ["Node.js", "Express", "MySQL", "QR Code", "REST API"],
     year: 2026,
     featured: true,
-    links: [{ labelKey: "liveSite", href: "https://attendance-7kse.onrender.com" }],
+    links: [{ labelKey: "liveSite", href: "https://log.nmu.edu.kh" }],
     shots: [
       {
         src: "/image/projects/attendance-qr.webp",

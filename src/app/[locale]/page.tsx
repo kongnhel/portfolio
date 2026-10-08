@@ -116,15 +116,17 @@ export default async function HomePage({ params }: { params: Params }) {
             </Link>
           }
         >
-          <div className="grid gap-4 sm:grid-cols-2">
+          {/* Ruled single-column listing, in the style of `ls` output. */}
+          <div className="border-t border-base-800">
             {projects.map((project, index) => (
-              <ProjectCard
-                key={project.slug}
-                project={project}
-                locale={locale}
-                dict={dict}
-                index={index}
-              />
+              <div key={project.slug} className="border-b border-base-800">
+                <ProjectCard
+                  project={project}
+                  locale={locale}
+                  dict={dict}
+                  index={index}
+                />
+              </div>
             ))}
           </div>
         </Section>
