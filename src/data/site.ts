@@ -14,22 +14,20 @@ export const site = {
   resumeUrl: null as string | null,
 
   /**
-   * Every image of you on the site is cut from one source photo:
-   * `public/image/me/my style.png` (1024×1536).
+   * Round profile photo (Home avatar fallback, About page): a face-centred
+   * square crop of `Young-Man-in-a-Cluttered-Office-Classroom.jpg`, saved as
+   * `/public/image/me/profile.webp` (720×720). Set to null to fall back to
+   * the monogram placeholder.
    *
-   * Round profile photo (Home avatar fallback, About page): a head-and-shoulders
-   * square crop of it, saved as `/public/image/me/profile.jpg` (512×512). Set to
-   * null to fall back to the monogram placeholder.
-   *
-   * The same face, cropped tighter and framed with a cyan ring, is the browser
-   * icon — see `src/app/favicon.ico`, `src/app/icon.png` and
-   * `src/app/apple-icon.png`. Replace all four together when this changes.
+   * The browser icon is a tighter crop of the older portrait — see
+   * `src/app/favicon.ico`, `src/app/icon.png` and `src/app/apple-icon.png`.
+   * Replace those together with the photo when it changes.
    */
-  photoUrl: "/image/me/profile.jpg" as string | null,
+  photoUrl: "/image/me/profile.webp" as string | null,
 
   /**
-   * Larger portrait for the Home hero: `/public/image/me/hero.jpg` (720×900) is
-   * a 4:5 crop of the same `public/image/me/my style.png`. Falls back to
+   * Larger portrait for the Home hero: `/public/image/me/hero.jpg` (720×900)
+   * is a 4:5 crop of `public/image/me/my style.png`. Falls back to
    * `photoUrl` when null, so the hero is never empty.
    */
   heroPhotoUrl: "/image/me/hero.jpg" as string | null,
