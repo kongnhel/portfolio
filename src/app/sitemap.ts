@@ -8,6 +8,7 @@ export const dynamic = "force-static";
 const staticPaths: { path: string; priority: number }[] = [
   { path: "", priority: 1 },
   { path: "/projects", priority: 0.7 },
+  { path: "/experience", priority: 0.7 },
   { path: "/about", priority: 0.7 },
   { path: "/contact", priority: 0.7 },
 ];

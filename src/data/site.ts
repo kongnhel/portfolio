@@ -47,15 +47,22 @@ export const site = {
  * Paths are locale-free. Labels come from the dictionary (nav.*) so they can be
  * translated; every route lives under /<locale>/<path>.
  */
-export type NavPath = "/" | "/projects" | "/about" | "/contact";
+export type NavPath = "/" | "/projects" | "/experience" | "/about" | "/contact";
 
-export const navPaths: readonly NavPath[] = ["/", "/projects", "/about", "/contact"];
+export const navPaths: readonly NavPath[] = [
+  "/",
+  "/projects",
+  "/experience",
+  "/about",
+  "/contact",
+];
 
-export type NavLabelKey = "home" | "projects" | "about" | "contact";
+export type NavLabelKey = "home" | "projects" | "experience" | "about" | "contact";
 
 export const navLabelKeys: Record<NavPath, NavLabelKey> = {
   "/": "home",
   "/projects": "projects",
+  "/experience": "experience",
   "/about": "about",
   "/contact": "contact",
 };

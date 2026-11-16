@@ -5,6 +5,7 @@ export const en = {
   nav: {
     home: "Home",
     projects: "Projects",
+    experience: "Experience",
     about: "About",
     contact: "Contact",
   },
@@ -110,6 +111,18 @@ export const en = {
     experience: "Experience",
     resume: "Résumé",
     downloadPdf: "Download PDF",
+  },
+
+  experiencePage: {
+    title: "Experience",
+    lede: "Where I've worked, taught, and studied — the short version of what shaped how I build software and explain it to other people.",
+    work: "Work",
+    education: "Education",
+    focusTitle: "What I bring",
+    focusKicker: "~/what-i-bring",
+    ctaTitle: "See it in the work",
+    ctaBody:
+      "The systems I've shipped and the classes I've taught say more than a timeline can.",
   },
 
   facts: {

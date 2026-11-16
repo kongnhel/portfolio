@@ -170,7 +170,33 @@ export const education: Entry[] = [
 
 export const experience: Entry[] = [
   {
-    period: "Classroom",
+    period: "2026 — Present",
+    copy: {
+      en: {
+        title: "Software Developer",
+        organisation: "Independent work for National Meanchey University",
+        points: [
+          "Built and shipped three systems now running at the university: class management, online scholarship enrolment, and QR attendance.",
+          "Designed the interfaces in Khmer and English, for the staff entering the data and the students reading it.",
+        ],
+      },
+    },
+  },
+  {
+    period: "2024 — Present",
+    copy: {
+      en: {
+        title: "Graphic Designer",
+        organisation: "Independent practice",
+        points: [
+          "Logos, banners, and marketing material, prepared with a print-and-screen eye.",
+          "The work runs alongside part-time study in layout and typography.",
+        ],
+      },
+    },
+  },
+  {
+    period: "Ongoing",
     copy: {
       en: {
         title: "Teaching Assistant",
