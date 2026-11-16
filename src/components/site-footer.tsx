@@ -20,7 +20,7 @@ export function SiteFooter({
   dict: Dictionary;
 }) {
   return (
-    <footer className="mt-24 border-t border-base-800">
+    <footer className="mt-24 border-t border-base-800 bg-base-950/55">
       <Reveal
         as="div"
         variant="fade"

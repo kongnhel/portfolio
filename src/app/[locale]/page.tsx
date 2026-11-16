@@ -35,19 +35,8 @@ export default async function HomePage({ params }: { params: Params }) {
 
   return (
     <>
-      {/* Hero — each line enters a beat after the one above it. Decorative
-          terminal glyphs float in the margins on larger screens. */}
+      {/* Hero — each line enters a beat after the one above it. */}
       <Container className="relative">
-        <span aria-hidden="true" className="hero-glyph hero-glyph-1 hidden sm:block">
-          {"</>"}
-        </span>
-        <span aria-hidden="true" className="hero-glyph hero-glyph-2 hidden sm:block">
-          {"{ }"}
-        </span>
-        <span aria-hidden="true" className="hero-glyph hero-glyph-3 hidden sm:block">
-          {"~/"}
-        </span>
-
         <div className="grid items-center gap-10 pt-14 pb-10 sm:pt-20 lg:grid-cols-[1fr_auto] lg:gap-14">
           <div className="min-w-0">
             <Reveal

@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Ambient } from "@/components/ambient";
-import { PointerGlow } from "@/components/pointer-glow";
 import { CursorFollower } from "@/components/cursor-follower";
 import { PageTransition } from "@/components/page-transition";
 import { site } from "@/data/site";
@@ -78,7 +77,6 @@ export default async function LocaleLayout({
       <body className="flex min-h-full flex-col">
         {/* Decorative layers first, so content stacks above them. */}
         <Ambient />
-        <PointerGlow />
         <CursorFollower />
         <a
           href="#main"

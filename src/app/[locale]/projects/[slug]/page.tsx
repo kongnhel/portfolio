@@ -184,7 +184,7 @@ export default async function ProjectPage({ params }: { params: Params }) {
                   >
                     {/* The screenshot curtains open (.img-wipe) instead of
                         scaling — the same reveal the cards use. */}
-                    <div className="img-wipe brackets relative">
+                    <div className="img-wipe relative">
                       <Image
                         src={shot.src}
                         alt={shot.alt}
@@ -193,12 +193,6 @@ export default async function ProjectPage({ params }: { params: Params }) {
                         className="w-full border border-base-800 bg-base-900"
                         // The first screenshot is the one a visitor sees first.
                         priority={index === 0}
-                      />
-                      {/* Pseudo-elements cannot attach to <img> (a replaced
-                          element), so the scanline sheen is its own layer. */}
-                      <span
-                        aria-hidden="true"
-                        className="crt-image pointer-events-none absolute inset-0"
                       />
                     </div>
                     <figcaption className="mt-2 font-mono text-xs leading-relaxed text-base-700">

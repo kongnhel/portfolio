@@ -6,8 +6,8 @@ import { cn } from "@/lib/utils";
  * Portrait photo, with a monogram fallback so the layout never shows a broken
  * image. Set `site.photoUrl` to a file in /public to display the photo.
  *
- * `ring` adds two decorative layers: a conic accent ring orbiting the portrait
- * and a slow outward pulse. Both are `aria-hidden` and both stop under
+ * `ring` adds a soft ambient halo behind the portrait — light rather than
+ * a border. Both layers are `aria-hidden`, and the float stops under
  * `prefers-reduced-motion`.
  */
 export function ProfilePhoto({
@@ -50,11 +50,7 @@ export function ProfilePhoto({
       className="relative shrink-0 animate-float"
       style={{ width: size, height: size }}
     >
-      <span aria-hidden="true" className="photo-ring" />
-      <span
-        aria-hidden="true"
-        className="animate-ring absolute inset-0 rounded-full border border-accent/60"
-      />
+      <span aria-hidden="true" className="photo-halo" />
       {inner}
     </div>
   );

@@ -145,60 +145,6 @@
     font-family: var(--font-display);
   }
 
-  body::before,
-  body::after {
-    content: "";
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: -1;
-  }
-
-  /* Two-tier schematic grid: fine cells for texture, heavy lines every fifth
-     cell for structure. Masked so it dissolves before it reaches the fold.
-     It breathes: the whole layer's opacity oscillates a few percent so the
-     room feels lit rather than printed. */
-  body::before {
-    background-image:
-      linear-gradient(
-          to right,
-          color-mix(in oklab, var(--base-800) 70%, transparent) 1px,
-          transparent 1px
-        ),
-      linear-gradient(
-          to bottom,
-          color-mix(in oklab, var(--base-800) 70%, transparent) 1px,
-          transparent 1px
-        ),
-      linear-gradient(
-          to right,
-          color-mix(in oklab, var(--base-800) 100%, transparent) 1px,
-          transparent 1px
-        ),
-      linear-gradient(
-          to bottom,
-          color-mix(in oklab, var(--base-800) 100%, transparent) 1px,
-          transparent 1px
-        );
-    background-size:
-      28px 28px,
-      28px 28px,
-      140px 140px,
-      140px 140px;
-    mask-image: radial-gradient(70rem 48rem at 50% 0%, black, transparent 76%);
-    animation: grid-breathe 18s ease-in-out infinite;
-  }
-
-  /* Phosphor haze behind the hero, breathing very slowly. */
-  body::after {
-    background: radial-gradient(
-      52rem 32rem at 50% -12rem,
-      color-mix(in oklab, var(--accent) 18%, transparent),
-      transparent 68%
-    );
-    animation: glow-breathe 14s ease-in-out infinite;
-  }
-
   ::selection {
     background-color: var(--accent);
     color: var(--base-950);
@@ -223,12 +169,21 @@
 }
 
 /* ============================================================
-   Ambient layers.
-   Fixed, non-interactive layers behind the content: drifting colour
-   fields, a CRT refresh sweep, scanlines, film grain and a vignette.
-   All live inside body's `isolation: isolate` stacking context at
-   z-index:-1, so they never intercept clicks.
+   Digital matrix background.
+   One cohesive fixed scene painted behind the whole site:
+   a midnight-navy base, drifting neon sky washes, a glowing horizon,
+   canvas-drawn falling light streaks and a perspective binary data
+   floor. Every layer is aria-hidden, ignores pointer events and lives
+   at z-index:-1 inside body's isolation context.
    ============================================================ */
+
+:root {
+  --mx-cyan: oklch(0.85 0.14 195);
+  --mx-blue: oklch(0.66 0.19 262);
+  --mx-violet: oklch(0.62 0.2 300);
+  --mx-magenta: oklch(0.68 0.24 330);
+  --mx-red: oklch(0.62 0.22 22);
+}
 
 .ambient {
   position: fixed;
@@ -236,311 +191,212 @@
   z-index: -1;
   pointer-events: none;
   overflow: hidden;
+  /* One shared perspective anchor for the floor accents. */
+  perspective: 900px;
 }
 
-/* Drifting colour fields. Each blob is a blurred radial gradient moved with
-   transforms only, so the compositor handles them without repainting. The
-   two-stop fill (bright core dissolving into the hue) gives each field a
-   light source instead of a flat wash. */
-.aurora {
-  position: absolute;
-  border-radius: 9999px;
-  filter: blur(90px);
-  opacity: 0.5;
-  will-change: transform;
-}
-
-.aurora-1 {
-  top: -22vh;
-  left: -12vw;
-  width: 44rem;
-  height: 44rem;
-  background: radial-gradient(
-    circle at 38% 38%,
-    color-mix(in oklab, var(--accent) 52%, transparent),
-    color-mix(in oklab, var(--accent) 24%, transparent) 42%,
-    transparent 68%
-  );
-  animation: aurora-a 26s ease-in-out infinite alternate;
-}
-
-.aurora-2 {
-  top: 26vh;
-  right: -16vw;
-  width: 38rem;
-  height: 38rem;
-  background: radial-gradient(
-    circle at 60% 40%,
-    color-mix(in oklab, var(--accent-2) 42%, transparent),
-    color-mix(in oklab, var(--accent-2) 19%, transparent) 44%,
-    transparent 70%
-  );
-  animation: aurora-b 32s ease-in-out infinite alternate;
-}
-
-.aurora-3 {
-  bottom: -24vh;
-  left: 22vw;
-  width: 40rem;
-  height: 40rem;
-  background: radial-gradient(
-    circle at 45% 55%,
-    color-mix(in oklab, var(--accent-3) 30%, transparent),
-    color-mix(in oklab, var(--accent-3) 13%, transparent) 45%,
-    transparent 70%
-  );
-  animation: aurora-c 38s ease-in-out infinite alternate;
-}
-
-/* In light mode the blobs need less opacity or they tint the text. */
-html:not(.dark) .aurora {
-  opacity: 0.22;
-  filter: blur(110px);
-}
-
-/* ------------------------------------------------------------
-   Floating element field.
-   Small "dust" motes drifting through the depth of field: a few glowing
-   orbs, a couple of hard geometric squares for contrast. All transforms,
-   all slow (29–52s), each on its own rhythm so the field never reads as
-   mechanical. They live inside .parallax-near so the cursor gently
-   displaces the whole layer — depth without a single repaint.
-   ------------------------------------------------------------ */
-.parallax-near {
+/* Deep-space foundation: almost-black navy cooling into midnight purple,
+   with violet and blue washes rising from the corners. */
+.mx-base {
   position: absolute;
   inset: 0;
-  /* --par-x/--par-y are written (lerped) by PointerGlow in the range
-     -1..1. With no JS, or on touch, they stay 0 and the layer is static. */
-  transform: translate3d(
-    calc(var(--par-x, 0) * 22px),
-    calc(var(--par-y, 0) * 16px),
-    0
-  );
-  will-change: transform;
+  background:
+    radial-gradient(
+      64rem 38rem at 16% -10%,
+      color-mix(in oklab, var(--mx-violet) 20%, transparent),
+      transparent 62%
+    ),
+    radial-gradient(
+      58rem 34rem at 84% -12%,
+      color-mix(in oklab, var(--mx-blue) 18%, transparent),
+      transparent 62%
+    ),
+    radial-gradient(
+      52rem 30rem at 50% 112%,
+      color-mix(in oklab, var(--mx-blue) 12%, transparent),
+      transparent 70%
+    ),
+    linear-gradient(180deg, #04050e 0%, #060a1c 44%, #0c0722 62%, #050610 100%);
 }
 
-.orb {
+/* Neon sky washes: magenta upper-left, cyan upper-right, violet breathing
+   across the middle. Movement is a few pixels of drift — weather, not a
+   light show. */
+.mx-sky {
   position: absolute;
-  border-radius: 9999px;
-  background: color-mix(in oklab, var(--accent) 60%, transparent);
-  box-shadow:
-    0 0 14px -2px color-mix(in oklab, var(--accent) 65%, transparent);
-  opacity: 0.38;
-  will-change: transform;
+  inset: 0;
+  background:
+    radial-gradient(
+      46rem 28rem at 10% -8%,
+      color-mix(in oklab, var(--mx-magenta) 15%, transparent),
+      transparent 60%
+    ),
+    radial-gradient(
+      52rem 30rem at 90% -10%,
+      color-mix(in oklab, var(--mx-cyan) 12%, transparent),
+      transparent 62%
+    ),
+    radial-gradient(
+      70rem 24rem at 50% 54%,
+      color-mix(in oklab, var(--mx-violet) 9%, transparent),
+      transparent 70%
+    );
+  animation: mx-sky-drift 28s ease-in-out infinite alternate;
 }
 
-/* The two squares break the roundness: hard geometry, like glyphs on screen. */
-.orb-square {
-  border-radius: 2px;
-  box-shadow: none;
+/* The glowing horizon: a soft cyan core with violet and magenta fringes,
+   breathing slowly. The aligned ::after line is the crisp light seam. */
+.mx-horizon {
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  top: 56%;
+  height: 20rem;
+  transform: translateY(-42%);
+  background:
+    radial-gradient(
+      52% 46% at 50% 54%,
+      color-mix(in oklab, var(--mx-cyan) 30%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      34% 30% at 50% 54%,
+      color-mix(in oklab, var(--mx-magenta) 15%, transparent),
+      transparent 66%
+    ),
+    radial-gradient(
+      70% 60% at 50% 54%,
+      color-mix(in oklab, var(--mx-blue) 16%, transparent),
+      transparent 78%
+    );
+  filter: blur(18px);
+  animation: mx-horizon-breathe 15s ease-in-out infinite;
 }
 
-.orb-1 {
-  width: 6px;
-  height: 6px;
+.mx-horizon::after {
+  content: "";
+  position: absolute;
   left: 12%;
-  top: 24%;
-  animation: orb-a 34s ease-in-out infinite alternate;
-}
-
-.orb-2 {
-  width: 10px;
-  height: 10px;
-  left: 78%;
-  top: 18%;
-  background: color-mix(in oklab, var(--accent-2) 60%, transparent);
-  box-shadow:
-    0 0 16px -2px color-mix(in oklab, var(--accent-2) 65%, transparent);
-  animation: orb-b 41s ease-in-out infinite alternate;
-}
-
-.orb-3 {
-  width: 4px;
-  height: 4px;
-  left: 33%;
-  top: 66%;
-  background: color-mix(in oklab, var(--accent-3) 65%, transparent);
-  box-shadow:
-    0 0 12px -2px color-mix(in oklab, var(--accent-3) 70%, transparent);
-  animation: orb-c 29s ease-in-out infinite alternate;
-}
-
-.orb-4 {
-  width: 9px;
-  height: 9px;
-  left: 88%;
-  top: 58%;
-  animation: orb-d 37s ease-in-out infinite alternate;
-}
-
-.orb-5 {
-  width: 14px;
-  height: 14px;
-  left: 6%;
-  top: 80%;
-  opacity: 0.22;
-  filter: blur(4px);
-  animation: orb-e 47s ease-in-out infinite alternate;
-}
-
-.orb-6 {
-  width: 7px;
-  height: 7px;
-  left: 57%;
-  top: 40%;
-  animation: orb-f 33s ease-in-out infinite alternate;
-}
-
-.orb-7 {
-  width: 16px;
-  height: 16px;
-  left: 69%;
-  top: 86%;
-  opacity: 0.18;
-  filter: blur(6px);
-  background: color-mix(in oklab, var(--accent-2) 50%, transparent);
-  box-shadow: none;
-  animation: orb-g 52s ease-in-out infinite alternate;
-}
-
-.orb-8 {
-  width: 5px;
-  height: 5px;
-  left: 45%;
-  top: 9%;
-  animation: orb-h 39s ease-in-out infinite alternate;
-}
-
-/* Squares rotate as they drift, so they read as tumbling geometry. */
-.orb-4.orb-square {
-  animation: orb-sq-a 37s ease-in-out infinite alternate;
-}
-
-.orb-6.orb-square {
-  animation: orb-sq-b 33s ease-in-out infinite alternate;
-}
-
-@keyframes orb-a {
-  from {
-    transform: translate3d(0, 0, 0);
-  }
-  to {
-    transform: translate3d(9vw, -13vh, 0);
-  }
-}
-
-@keyframes orb-b {
-  from {
-    transform: translate3d(0, 0, 0);
-  }
-  to {
-    transform: translate3d(-8vw, 11vh, 0);
-  }
-}
-
-@keyframes orb-c {
-  from {
-    transform: translate3d(0, 0, 0);
-  }
-  to {
-    transform: translate3d(12vw, -8vh, 0);
-  }
-}
-
-@keyframes orb-d {
-  from {
-    transform: translate3d(0, 0, 0) rotate(0deg);
-  }
-  to {
-    transform: translate3d(-11vw, 9vh, 0) rotate(160deg);
-  }
-}
-
-@keyframes orb-e {
-  from {
-    transform: translate3d(0, 0, 0);
-  }
-  to {
-    transform: translate3d(14vw, -10vh, 0);
-  }
-}
-
-@keyframes orb-f {
-  from {
-    transform: translate3d(0, 0, 0) rotate(0deg);
-  }
-  to {
-    transform: translate3d(7vw, 13vh, 0) rotate(-140deg);
-  }
-}
-
-@keyframes orb-g {
-  from {
-    transform: translate3d(0, 0, 0);
-  }
-  to {
-    transform: translate3d(-12vw, -9vh, 0);
-  }
-}
-
-@keyframes orb-h {
-  from {
-    transform: translate3d(0, 0, 0);
-  }
-  to {
-    transform: translate3d(8vw, 12vh, 0);
-  }
-}
-
-@keyframes orb-sq-a {
-  from {
-    transform: translate3d(0, 0, 0) rotate(45deg);
-  }
-  to {
-    transform: translate3d(-11vw, 9vh, 0) rotate(205deg);
-  }
-}
-
-@keyframes orb-sq-b {
-  from {
-    transform: translate3d(0, 0, 0) rotate(-30deg);
-  }
-  to {
-    transform: translate3d(7vw, 13vh, 0) rotate(-170deg);
-  }
-}
-
-/* The CRT refresh bar: a bright horizontal band that falls once every few
-   seconds, exactly like the rolling refresh of an old monitor. */
-.sweep {
-  position: absolute;
-  inset-inline: 0;
-  height: 34vh;
+  right: 12%;
+  top: 52%;
+  height: 1.5px;
   background: linear-gradient(
-    to bottom,
+    90deg,
     transparent,
-    color-mix(in oklab, var(--accent) 7%, transparent) 55%,
-    color-mix(in oklab, var(--accent) 12%, transparent) 88%,
+    color-mix(in oklab, var(--mx-cyan) 75%, transparent) 26%,
+    color-mix(in oklab, var(--mx-violet) 65%, transparent) 52%,
+    color-mix(in oklab, var(--mx-magenta) 60%, transparent) 74%,
     transparent
   );
-  animation: crt-sweep 9s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  box-shadow:
+    0 0 26px 2px color-mix(in oklab, var(--mx-cyan) 32%, transparent),
+    0 0 70px 8px color-mix(in oklab, var(--mx-violet) 15%, transparent);
 }
 
-/* Scanlines. `base-100` is dark in the light theme and near-white in dark, so
-   one expression darkens the light screen and brightens the dark one. */
-.scanlines {
+/* Light spill rising off the data floor. */
+.mx-floor-glow {
   position: absolute;
-  inset: 0;
-  background-image: repeating-linear-gradient(
-    to bottom,
-    color-mix(in oklab, var(--base-100) 7%, transparent) 0 1px,
-    transparent 1px 3px
+  left: 0;
+  right: 0;
+  top: 56%;
+  height: 34%;
+  background: radial-gradient(
+    75% 100% at 50% 0%,
+    color-mix(in oklab, var(--mx-blue) 15%, transparent),
+    color-mix(in oklab, var(--mx-violet) 7%, transparent) 45%,
+    transparent 72%
   );
-  opacity: 0.5;
 }
 
-html:not(.dark) .scanlines {
-  opacity: 0.9;
+/* Canvas surfaces. Both are sized by the component; CSS only places them. */
+.mx-canvas {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  display: block;
+}
+
+.mx-streaks {
+  top: 0;
+  height: 100%;
+  /* The rain dissolves as it meets the floor, so the horizon stays clean. */
+  mask-image: linear-gradient(180deg, black 0%, black 52%, transparent 72%);
+}
+
+.mx-floor {
+  top: 56%;
+  height: 44%;
+}
+
+/* A soft floor scrim: the near rows are the densest part of the scene, and
+   footer text scrolls directly over them. This keeps the glyphs visible
+   while giving the bottom of the viewport a calm base to read against. */
+.mx-scrim {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 30%;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    color-mix(in oklab, var(--base-950) 34%, transparent) 45%,
+    color-mix(in oklab, var(--base-950) 72%, transparent)
+  );
+}
+
+/* Light theme: the matrix becomes a daylight hologram — same structure,
+   muted inks on pale lavender paper. The canvases read this from the
+   html.dark class and switch palettes themselves. */
+html:not(.dark) .mx-base {
+  background:
+    radial-gradient(
+      64rem 38rem at 16% -10%,
+      color-mix(in oklab, var(--mx-violet) 10%, transparent),
+      transparent 62%
+    ),
+    radial-gradient(
+      58rem 34rem at 84% -12%,
+      color-mix(in oklab, var(--mx-blue) 10%, transparent),
+      transparent 62%
+    ),
+    linear-gradient(
+      180deg,
+      var(--base-950) 0%,
+      color-mix(in oklab, var(--base-950) 94%, var(--mx-violet)) 58%,
+      var(--base-950) 100%
+    );
+}
+
+html:not(.dark) .mx-sky {
+  opacity: 0.55;
+}
+
+html:not(.dark) .mx-horizon {
+  opacity: 0.42;
+}
+
+html:not(.dark) .mx-floor-glow {
+  opacity: 0.45;
+}
+
+@keyframes mx-sky-drift {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(0, 1.6vh, 0) scale(1.03);
+  }
+}
+
+@keyframes mx-horizon-breathe {
+  0%,
+  100% {
+    opacity: 0.72;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
 /* Corner falloff so panels at the edges of the screen sit in shadow. */
@@ -554,56 +410,20 @@ html:not(.dark) .scanlines {
   );
 }
 
-/* Film grain: an inline SVG fractal noise, tiled. Keeps the flat gradients
-   from banding and gives the screen a printed texture. */
+/* Film grain: an inline SVG fractal noise, tiled. A still layer — keeps the
+   flat gradients from banding and gives the screen a printed texture
+   without adding any motion or noise of its own. */
 .grain {
   position: fixed;
   inset: -50%;
   z-index: -1;
   pointer-events: none;
-  opacity: 0.045;
+  opacity: 0.035;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
-  animation: grain-shift 6s steps(4) infinite;
 }
 
 html:not(.dark) .grain {
-  opacity: 0.03;
-}
-
-/* The "mouse hole": a soft accent spotlight that follows the cursor. Its
-   position arrives as --pointer-x/--pointer-y, lerped by PointerGlow so the
-   light trails the pointer slightly instead of snapping. A second, wider
-   fringe in the secondary hue gives the light a cast rather than a disc. */
-.pointer-glow {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background:
-    radial-gradient(
-      22rem circle at var(--pointer-x, 50%) var(--pointer-y, 30%),
-      color-mix(in oklab, var(--accent) 14%, transparent),
-      transparent 62%
-    ),
-    radial-gradient(
-      42rem circle at var(--pointer-x, 50%) var(--pointer-y, 30%),
-      color-mix(in oklab, var(--accent-2) 6%, transparent),
-      transparent 70%
-    );
-  opacity: 0;
-  transition: opacity 600ms ease;
-}
-
-.pointer-glow.is-active {
-  opacity: 1;
-}
-
-/* Touch devices have no cursor to follow, and reduced motion should not have a
-   light source zip around, so the layer stays off in both cases. */
-@media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
-  .pointer-glow {
-    display: none;
-  }
+  opacity: 0.025;
 }
 
 /* ------------------------------------------------------------
@@ -669,38 +489,38 @@ html.show-cursor .cursor-ring {
   }
 }
 
-/* Ambient budget on small/touch screens: the refresh sweep and the film grain
-   are the two least essential full-viewport layers, and five stacked fixed
-   layers is a lot to composite on a phone. Both are dropped below 768px; the
-   aurora fields stay but get cheaper (smaller blur, two of three stop
-   drifting). */
+/* Ambient budget on small screens: the film grain is the least essential
+   full-viewport layer, so it is dropped below 768px. The canvases already
+   run on a reduced budget there (the component halves streak count, glyph
+   density and pixel ratio); the CSS sky stops drifting. */
 @media (max-width: 767px) {
-  .sweep,
   .grain {
     display: none;
   }
 
-  .aurora {
-    filter: blur(64px);
+  .mx-sky {
+    animation: none;
   }
 
-  /* Half the mote field is enough on a phone; the four kept ones carry the
-     effect at a fraction of the compositing cost. */
-  .orb-5,
-  .orb-6,
-  .orb-7,
-  .orb-8 {
-    display: none;
+  .mx-horizon {
+    filter: blur(14px);
   }
 
-  .orb {
-    box-shadow: none;
+  /* On a tall phone, the hero CTAs live where the floor would begin; drop
+     the floor a little so buttons and socials stay clear of the glyphs. */
+  .mx-horizon,
+  .mx-floor-glow,
+  .mx-floor {
+    top: 64%;
+  }
+
+  .mx-floor {
+    height: 36%;
   }
 }
 
 @media (hover: none) and (pointer: coarse) {
-  .aurora-2,
-  .aurora-3 {
+  .mx-sky {
     animation: none;
   }
 }
@@ -753,60 +573,6 @@ html.show-cursor .cursor-ring {
   50% {
     background-position: 100% 50%;
   }
-}
-
-/* Corner brackets, the site's one repeated motif. Four L-shaped hairlines
-   drawn with gradient borders so each arm fades out from its corner. */
-.brackets::before,
-.brackets::after {
-  content: "";
-  position: absolute;
-  width: 14px;
-  height: 14px;
-  pointer-events: none;
-  border-color: var(--accent);
-  transition:
-    opacity 300ms ease,
-    inset 300ms ease;
-}
-
-.brackets::before {
-  inset: -1px auto auto -1px;
-  border-top-width: 1px;
-  border-left-width: 1px;
-}
-
-.brackets::after {
-  inset: auto -1px -1px auto;
-  border-bottom-width: 1px;
-  border-right-width: 1px;
-}
-
-.brackets:hover::before,
-.brackets:hover::after,
-.brackets:focus-within::before,
-.brackets:focus-within::after {
-  inset: -5px auto auto -5px;
-}
-
-.brackets:hover::after,
-.brackets:focus-within::after {
-  inset: auto -5px -5px auto;
-}
-
-/* Scanline sheen laid over a photo or image frame, tying the imagery into the
-   CRT language. Pair with .brackets. */
-.crt-image::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background-image: repeating-linear-gradient(
-    to bottom,
-    color-mix(in oklab, var(--accent) 16%, transparent) 0 1px,
-    transparent 1px 3px
-  );
-  opacity: 0.55;
 }
 
 /* Status LED: a small dot that keeps a slow pulse, used next to live labels. */
@@ -1156,23 +922,6 @@ html.show-cursor .cursor-ring {
   }
 }
 
-@keyframes ring-out {
-  from {
-    opacity: 0.5;
-    transform: scale(1);
-  }
-  to {
-    opacity: 0;
-    transform: scale(1.55);
-  }
-}
-
-@keyframes spin-slow {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 @keyframes sheen-sweep {
   from {
     transform: translateX(-130%);
@@ -1269,81 +1018,6 @@ html.show-cursor .cursor-ring {
   }
 }
 
-/* The schematic grid's slow breath. */
-@keyframes grid-breathe {
-  0%,
-  100% {
-    opacity: 0.85;
-  }
-  50% {
-    opacity: 1;
-  }
-}
-
-/* Ambient background drift. Transforms only — no layout, no repaint. */
-@keyframes aurora-a {
-  from {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-  to {
-    transform: translate3d(8vw, 6vh, 0) scale(1.18);
-  }
-}
-
-@keyframes aurora-b {
-  from {
-    transform: translate3d(0, 0, 0) scale(1.1);
-  }
-  to {
-    transform: translate3d(-7vw, 9vh, 0) scale(0.94);
-  }
-}
-
-@keyframes aurora-c {
-  from {
-    transform: translate3d(0, 0, 0) scale(0.95);
-  }
-  to {
-    transform: translate3d(5vw, -7vh, 0) scale(1.15);
-  }
-}
-
-/* The refresh bar crosses the viewport, pauses, then restarts from the top. */
-@keyframes crt-sweep {
-  0% {
-    transform: translate3d(0, -40vh, 0);
-    opacity: 0;
-  }
-  8% {
-    opacity: 1;
-  }
-  82% {
-    opacity: 1;
-  }
-  100% {
-    transform: translate3d(0, 105vh, 0);
-    opacity: 0;
-  }
-}
-
-@keyframes grain-shift {
-  0% {
-    transform: translate3d(0, 0, 0);
-  }
-  25% {
-    transform: translate3d(-3%, 2%, 0);
-  }
-  50% {
-    transform: translate3d(2%, -3%, 0);
-  }
-  75% {
-    transform: translate3d(-2%, -2%, 0);
-  }
-  100% {
-    transform: translate3d(0, 0, 0);
-  }
-}
-
 @keyframes rule-in {
   from {
     transform: scaleX(0);
@@ -1437,15 +1111,6 @@ html.js [data-reveal][data-state="shown"] .img-wipe {
 
 .animate-float {
   animation: float-y 7s ease-in-out infinite;
-}
-
-.animate-spin-slow {
-  animation: spin-slow 20s linear infinite;
-}
-
-/* Outward pulse behind the portrait. */
-.animate-ring {
-  animation: ring-out 3.4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
 }
 
 /* Soft glow that brightens and dims behind the hero portrait. */
@@ -1626,10 +1291,10 @@ html.js [data-reveal][data-state="shown"] .timeline-dot {
 
 .rail i {
   display: block;
-  width: 9px;
-  height: 9px;
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
   border: 1px solid color-mix(in oklab, var(--base-500) 70%, transparent);
-  transform: rotate(45deg);
   transition:
     background-color 300ms ease,
     border-color 300ms ease,
@@ -1670,7 +1335,7 @@ html.js [data-reveal][data-state="shown"] .timeline-dot {
 }
 
 /* Glowing separator between major sections: a hairline that dissolves at
-   both ends with a small rotated diamond at the midpoint. */
+   both ends. */
 .hr-glow {
   position: relative;
   height: 1px;
@@ -1681,20 +1346,6 @@ html.js [data-reveal][data-state="shown"] .timeline-dot {
     var(--base-800) 78%,
     transparent
   );
-}
-
-.hr-glow::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 5px;
-  height: 5px;
-  translate: -50% -50%;
-  rotate: 45deg;
-  background: var(--accent);
-  box-shadow: var(--glow);
-  opacity: 0.75;
 }
 
 /* Mobile menu: collapses on height without display:none, so it can animate.
@@ -1722,79 +1373,28 @@ html.js [data-reveal][data-state="shown"] .timeline-dot {
   }
 }
 
-/* Conic ring orbiting the portrait. */
-.photo-ring {
+/* A soft halo for the round portrait fallback: light, not a border. */
+.photo-halo {
   position: absolute;
-  inset: -6px;
+  inset: -14%;
   border-radius: 9999px;
-  background: conic-gradient(
-    from 0deg,
-    transparent 0deg,
-    color-mix(in oklab, var(--accent) 85%, transparent) 90deg,
-    transparent 200deg
+  background: radial-gradient(
+    circle,
+    color-mix(in oklab, var(--mx-cyan) 26%, transparent),
+    transparent 70%
   );
-  mask: radial-gradient(farthest-side, transparent calc(100% - 2px), black 0);
-  animation: spin-slow 9s linear infinite;
-}
-
-/* A single hairline square slowly orbiting the portrait frame — one piece of
-   "tumbling geometry" tying the background's squares into the hero. */
-.orbit-square {
-  position: absolute;
-  inset: -13px;
-  border: 1px solid color-mix(in oklab, var(--accent) 22%, transparent);
+  filter: blur(14px);
   pointer-events: none;
-  animation: orbit-spin 26s linear infinite;
 }
 
-@keyframes orbit-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* Terminal glyphs floating in the hero's margins (decorative, aria-hidden).
-   They sit inside the hero container, not the global background, so they can
-   hug the content they belong to. */
-.hero-glyph {
-  position: absolute;
-  font-family: var(--font-code);
-  color: color-mix(in oklab, var(--accent) 45%, transparent);
-  pointer-events: none;
-  user-select: none;
-}
-
-.hero-glyph-1 {
-  top: 6%;
-  left: 0.5rem;
-  font-size: 0.75rem;
-  animation: float-y 9s ease-in-out infinite;
-}
-
-.hero-glyph-2 {
-  bottom: 18%;
-  right: 0.25rem;
-  font-size: 0.8rem;
-  color: color-mix(in oklab, var(--accent-2) 40%, transparent);
-  animation: float-y 11s ease-in-out 1.2s infinite;
-}
-
-.hero-glyph-3 {
-  bottom: 4%;
-  left: 12%;
-  font-size: 0.7rem;
-  color: color-mix(in oklab, var(--accent-3) 45%, transparent);
-  animation: float-y 8s ease-in-out 2.4s infinite;
-}
-
-/* A soft secondary-hue bloom behind the portrait frame, next to the accent
-   one, so the hero's light reads as a two-source scene. */
+/* A soft violet-blue fill light behind the portrait frame, next to the cyan
+   key light, so the hero reads as a two-source scene. */
 .hero-bloom-2 {
   position: absolute;
   inset: 12% -18% -10% 34%;
   background: radial-gradient(
     circle,
-    color-mix(in oklab, var(--accent-2) 20%, transparent),
+    color-mix(in oklab, var(--mx-violet) 24%, transparent),
     transparent 70%
   );
   filter: blur(40px);
@@ -1859,19 +1459,11 @@ html.theme-fade *::after {
     stroke 420ms ease !important;
 }
 
-/* Backgrounded tabs pause every ambient animation. Some compositors keep
-   CSS animations running while the page is not visible, which spends
-   battery on a scene nobody is watching. The class is toggled by the
-   visibilitychange listener in pointer-glow (already awake for its own
-   loop). Specificity clears each animation shorthand without !important. */
-html.tab-hidden .aurora,
-html.tab-hidden .orb,
-html.tab-hidden .sweep,
-html.tab-hidden .orbit-square,
-html.tab-hidden .hero-glyph,
-html.tab-hidden .text-shimmer,
-html.tab-hidden body::before,
-html.tab-hidden body::after {
+/* Backgrounded tabs pause the ambient CSS layers; the canvas loop parks
+   itself from the same visibilitychange handler in the Ambient component. */
+html.tab-hidden .mx-sky,
+html.tab-hidden .mx-horizon,
+html.tab-hidden .text-shimmer {
   animation-play-state: paused;
 }
 
@@ -1898,26 +1490,17 @@ html.tab-hidden body::after {
     clip-path: none !important;
   }
 
-  /* The drifting fields have nothing to reveal without motion, so they are
-     parked as static, very soft washes instead of being switched off. */
-  .aurora,
-  .sweep,
-  .grain,
-  .orb,
-  .mesh {
+  /* The drifting sky and horizon have nothing to reveal without motion, so
+     they are parked as static washes instead of being switched off. */
+  .mx-sky,
+  .mx-horizon,
+  .grain {
     animation: none !important;
-  }
-
-  /* A frozen scanline pattern is just a texture; keep it, but a frozen
-     refresh bar is a bright band stuck across the content. */
-  .sweep {
-    display: none !important;
   }
 
   /* Light that chases a pointer is motion by definition. */
   .cursor-dot,
-  .cursor-ring,
-  .pointer-glow {
+  .cursor-ring {
     display: none !important;
   }
 
@@ -1928,9 +1511,7 @@ html.tab-hidden body::after {
     opacity: 0 !important;
   }
 
-  .text-shimmer,
-  .orbit-square,
-  .hero-glyph {
+  .text-shimmer {
     animation: none !important;
   }
 

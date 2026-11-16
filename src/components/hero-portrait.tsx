@@ -3,10 +3,10 @@ import { site } from "@/data/site";
 import { ProfilePhoto } from "@/components/profile-photo";
 
 /**
- * The Home hero portrait: a 4:5 photo in a hard-edged frame with corner
- * brackets, a slow accent bloom behind it and a floating availability chip.
- * Falls back to the round `ProfilePhoto` when no hero photo is set, so the
- * hero is never empty.
+ * The Home hero portrait: a 4:5 photo in a clean frame with a slow cyan
+ * bloom behind it, a violet fill light from the opposite side and a
+ * floating availability chip. Falls back to the round `ProfilePhoto` when
+ * no hero photo is set, so the hero is never empty.
  *
  * Each animation sits on its own element — `animate-float` and `animate-glow`
  * both use the `animation` shorthand, so they cannot share a node.
@@ -18,9 +18,9 @@ export function HeroPortrait() {
 
   return (
     <div className="relative w-[220px] shrink-0 sm:w-[264px]">
-      {/* Breathing blooms behind the photo: the accent is the key light, the
-          magenta a low fill from the other side. Two animations, two nodes —
-          they share the `animation` shorthand and cannot coexist on one. */}
+      {/* Breathing blooms behind the photo: cyan is the key light, violet a
+          low fill from the other side. Two animations, two nodes — they
+          share the `animation` shorthand and cannot coexist on one. */}
       <span
         aria-hidden="true"
         className="animate-glow pointer-events-none absolute -inset-8 bg-accent/15 blur-3xl"
@@ -30,11 +30,7 @@ export function HeroPortrait() {
         className="hero-bloom-2 pointer-events-none absolute"
       />
 
-      {/* A hairline square slowly orbiting the frame: one piece of tumbling
-          geometry tying the portrait into the background's mote field. */}
-      <span aria-hidden="true" className="orbit-square" />
-
-      <div className="animate-float brackets relative border border-base-800 bg-base-900 shadow-[var(--glow-soft)]">
+      <div className="animate-float relative border border-base-800 bg-base-900 shadow-[var(--glow-soft)]">
         <div className="relative overflow-hidden">
           <Image
             src={site.heroPhotoUrl}
