@@ -45,10 +45,11 @@ export function SiteHeader({
         className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-accent via-accent-2 to-transparent"
       />
 
-      <div className="relative mx-auto flex h-16 max-w-4xl items-center justify-between gap-4 px-5 sm:px-6">
+      <div className="relative mx-auto flex h-16 max-w-4xl items-center justify-between gap-4 px-5 sm:px-6 2xl:max-w-5xl">
         <Link
           href={localisedPath(locale)}
-          className="group flex items-center font-mono text-sm tracking-tight transition-colors"
+          // py + negative my: reach a 44px tap height without changing the bar.
+          className="group flex items-center py-3 -my-3 font-mono text-sm tracking-tight transition-colors"
         >
           <span aria-hidden="true" className="text-base-700">
             ~/
@@ -73,7 +74,7 @@ export function SiteHeader({
                 href={href}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "nav-link relative z-10 px-3 py-2 font-mono text-xs uppercase tracking-wider transition-colors duration-200",
+                  "nav-link relative z-10 px-3 py-2.5 font-mono text-xs uppercase tracking-wider transition-colors duration-200",
                   active
                     ? "text-accent"
                     : "text-base-500 hover:text-base-100",
@@ -104,7 +105,7 @@ export function SiteHeader({
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
             aria-controls="mobile-nav"
-            className="border border-base-800 p-2.5 text-base-300 transition-colors hover:border-accent hover:text-accent sm:hidden"
+            className="border border-base-800 p-3.5 text-base-300 transition-colors hover:border-accent hover:text-accent sm:hidden"
           >
             <span className="sr-only">{open ? "Close menu" : "Open menu"}</span>
             <span className="icon-swap block" key={open ? "close" : "open"}>
@@ -136,7 +137,7 @@ export function SiteHeader({
         className={cn("mobile-nav", open && "is-open")}
       >
         <div>
-          <ul className="mx-auto max-w-4xl border-t border-base-800 px-5 py-2 sm:px-6">
+          <ul className="mx-auto max-w-4xl border-t border-base-800 px-5 py-2 sm:px-6 2xl:max-w-5xl">
             {labels.map(({ path, label }, index) => {
               const href = localisedPath(locale, path);
               return (

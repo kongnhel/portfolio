@@ -101,6 +101,10 @@ export function PointerGlow() {
     };
 
     const onVisibility = () => {
+      // Park this loop while hidden; also flip the document-level class that
+      // pauses the ambient CSS animations (see html.tab-hidden in globals.css)
+      // so backgrounded tabs do not keep compositing the scene.
+      document.documentElement.classList.toggle("tab-hidden", document.hidden);
       if (document.hidden && frame) {
         cancelAnimationFrame(frame);
         frame = 0;

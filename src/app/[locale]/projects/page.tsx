@@ -32,7 +32,7 @@ export default async function ProjectsPage({ params }: { params: Params }) {
       />
 
       {sorted.length > 0 ? (
-        <div className="grid gap-5 pb-10 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-5 pb-10 sm:grid-cols-2">
           {sorted.map((project, index) => (
             <ProjectCard
               key={project.slug}

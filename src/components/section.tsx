@@ -50,8 +50,9 @@ export function Section({
                   <span className="text-base-700">{kicker}</span>
                 </p>
               ) : null}
-              {/* Reads as a shell command rather than a page-heading label. */}
-              <h2 className="mt-1.5 truncate text-2xl font-bold tracking-tight text-balance text-base-100 sm:text-3xl">
+              {/* Reads as a shell command rather than a page-heading label.
+                  Fluid so it grows with the viewport instead of stepping. */}
+              <h2 className="mt-1.5 truncate text-[clamp(1.5rem,1.25rem+0.8vw,1.875rem)] font-bold tracking-tight text-balance text-base-100">
                 {title}
               </h2>
             </span>
@@ -84,7 +85,7 @@ export function Container({
   className?: string;
 }) {
   return (
-    <div className={cn("mx-auto w-full max-w-4xl px-5 sm:px-6", className)}>
+    <div className={cn("mx-auto w-full max-w-4xl px-5 sm:px-6 2xl:max-w-5xl", className)}>
       {children}
     </div>
   );
@@ -111,7 +112,7 @@ export function PageHeader({
           <span className="text-base-700">$</span>
           <span className="caret-blink ml-0.5" />
         </p>
-        <h1 className="mt-3 text-4xl font-bold tracking-tight text-balance sm:text-5xl">
+        <h1 className="mt-3 text-[clamp(2.25rem,1.9rem+1.5vw,3rem)] font-bold tracking-tight text-balance">
           {title}
         </h1>
       </Reveal>
@@ -202,7 +203,9 @@ export function LinkButton({
   className?: string;
 }) {
   const classes = cn(
-    "group/btn sheen inline-flex items-center gap-2 border px-4 py-2.5 font-mono text-sm font-medium transition-all duration-300",
+    // Full-width and 44px tall on phones (comfortable thumb targets), back to
+    // the compact inline pill from SM up.
+    "group/btn sheen inline-flex w-full items-center justify-center gap-2 border px-4 py-3 font-mono text-sm font-medium transition-all duration-300 sm:w-auto sm:justify-start sm:py-2.5",
     // Press: settle the lift and give a whisper of scale so taps feel physical.
     "hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.97]",
     variant === "primary"

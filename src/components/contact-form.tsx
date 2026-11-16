@@ -195,7 +195,7 @@ export function ContactForm({ dict }: { dict: Dictionary }) {
 
       <button
         type="submit"
-        className="sheen btn-accent inline-flex items-center gap-1 border border-accent bg-accent px-5 py-2.5 font-mono text-sm font-medium text-base-950 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_22px_-4px_var(--accent)]"
+        className="sheen btn-accent inline-flex items-center gap-1 border border-accent bg-accent px-5 py-3 font-mono text-sm font-medium text-base-950 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_22px_-4px_var(--accent)] sm:py-2.5"
       >
         <span aria-hidden="true">&gt; </span>
         {dict.form.send}

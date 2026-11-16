@@ -25,7 +25,7 @@ export function SiteFooter({
         as="div"
         variant="fade"
         duration={800}
-        className="mx-auto max-w-4xl px-5 py-10 sm:px-6"
+        className="mx-auto max-w-4xl px-5 py-10 sm:px-6 2xl:max-w-5xl"
       >
         <div className="grid gap-10 sm:grid-cols-[1.4fr_1fr_1fr]">
           <div>
@@ -54,7 +54,9 @@ export function SiteFooter({
                 <li key={path}>
                   <Link
                     href={localisedPath(locale, path)}
-                    className="link-underline font-mono text-sm text-base-500 transition-colors hover:text-base-100"
+                    // py/-my pairs give phones a 40px tap row while the
+                    // negative margin keeps the footer's visual rhythm.
+                    className="link-underline -my-1 inline-flex py-2.5 font-mono text-sm text-base-500 transition-colors hover:text-base-100"
                   >
                     {dict.nav[navLabelKeys[path]]}
                   </Link>
@@ -77,7 +79,7 @@ export function SiteFooter({
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 font-mono text-sm text-base-500 transition-colors hover:text-accent"
+                    className="-my-1 inline-flex items-center gap-2 py-2.5 font-mono text-sm text-base-500 transition-colors hover:text-accent"
                   >
                     <SocialIcon
                       kind={socialKinds[social.label] ?? "external"}
@@ -93,7 +95,7 @@ export function SiteFooter({
               <li>
                 <Link
                   href={localisedPath(locale, "/contact")}
-                  className="inline-flex items-center gap-2 font-mono text-sm text-base-500 transition-colors hover:text-accent"
+                  className="-my-1 inline-flex items-center gap-2 py-2.5 font-mono text-sm text-base-500 transition-colors hover:text-accent"
                 >
                   <SocialIcon kind="mail" className="size-3.5" />
                   {dict.contactPage.email}

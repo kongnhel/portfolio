@@ -131,7 +131,8 @@ export function ProjectCard({
                   href={link.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 font-mono text-xs text-base-500 transition-colors hover:text-accent"
+                  // py/-my pairs: ~44px tap rows on phones, compact on hover.
+                  className="-my-3 inline-flex items-center gap-1.5 px-1 py-3 font-mono text-xs text-base-500 transition-colors hover:text-accent sm:-my-1 sm:py-1"
                 >
                   <SocialIcon kind="external" className="size-3" />
                   {dict.project[link.labelKey]}

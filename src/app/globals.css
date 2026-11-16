@@ -1859,6 +1859,22 @@ html.theme-fade *::after {
     stroke 420ms ease !important;
 }
 
+/* Backgrounded tabs pause every ambient animation. Some compositors keep
+   CSS animations running while the page is not visible, which spends
+   battery on a scene nobody is watching. The class is toggled by the
+   visibilitychange listener in pointer-glow (already awake for its own
+   loop). Specificity clears each animation shorthand without !important. */
+html.tab-hidden .aurora,
+html.tab-hidden .orb,
+html.tab-hidden .sweep,
+html.tab-hidden .orbit-square,
+html.tab-hidden .hero-glyph,
+html.tab-hidden .text-shimmer,
+html.tab-hidden body::before,
+html.tab-hidden body::after {
+  animation-play-state: paused;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

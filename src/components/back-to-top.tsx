@@ -22,7 +22,7 @@ export function BackToTop({ label }: { label: string }) {
     <button
       type="button"
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-      className={`inline-flex items-center gap-2 border border-base-800 px-3 py-2 font-mono text-xs text-base-500 transition-all duration-300 hover:border-accent hover:text-accent ${
+      className={`inline-flex items-center gap-2 border border-base-800 px-3 py-3.5 font-mono text-xs text-base-500 transition-all duration-300 hover:border-accent hover:text-accent sm:py-2 ${
         visible ? "opacity-100" : "pointer-events-none opacity-0"
       }`}
     >

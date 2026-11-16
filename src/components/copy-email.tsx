@@ -76,7 +76,7 @@ export function CopyEmail({
       type="button"
       onClick={copy}
       aria-label={`${label}: ${email}`}
-      className="inline-flex items-center gap-1.5 border border-base-800 px-2 py-1 font-mono text-xs text-base-500 transition-colors hover:border-accent/60 hover:text-accent"
+      className="inline-flex items-center gap-1.5 border border-base-800 px-3.5 py-2.5 font-mono text-xs text-base-500 transition-colors hover:border-accent/60 hover:text-accent sm:px-2 sm:py-1"
     >
       <SocialIcon
         kind="copy"

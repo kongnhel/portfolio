@@ -74,7 +74,7 @@ export default async function HomePage({ params }: { params: Params }) {
               y={26}
               delay={170}
               duration={850}
-              className="mt-4 text-5xl font-bold tracking-tight text-balance sm:text-6xl lg:text-7xl"
+              className="mt-4 text-[clamp(2.75rem,2rem+3vw,4.5rem)] font-bold tracking-tight text-balance"
             >
               <span className="text-gradient text-shimmer">{site.name}</span>
             </Reveal>
@@ -107,7 +107,7 @@ export default async function HomePage({ params }: { params: Params }) {
               y={16}
               delay={500}
               duration={700}
-              className="mt-8 flex flex-wrap items-center gap-3"
+              className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center"
             >
               <LinkButton href={localisedPath(locale, "/projects")}>
                 {dict.home.viewProjects}
@@ -127,7 +127,7 @@ export default async function HomePage({ params }: { params: Params }) {
               variant="fade"
               duration={300}
               delay={600}
-              className="stagger mt-6 flex flex-wrap items-center gap-2"
+              className="stagger mt-6 flex flex-wrap items-center gap-2.5 sm:gap-2"
             >
               {site.socials.map((social, index) => (
                 <li
@@ -139,7 +139,7 @@ export default async function HomePage({ params }: { params: Params }) {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={social.label}
-                    className="inline-flex items-center gap-2 border border-base-800 px-3 py-2 font-mono text-xs text-base-500 transition-all duration-300 hover:-translate-y-0.5 hover:border-accent/60 hover:text-accent"
+                    className="inline-flex items-center gap-2 border border-base-800 px-3.5 py-3 font-mono text-xs text-base-500 transition-all duration-300 hover:-translate-y-0.5 hover:border-accent/60 hover:text-accent sm:px-3 sm:py-2"
                   >
                     <SocialIcon kind={socialKinds[index]} className="size-3.5" />
                     {social.label}
@@ -237,7 +237,7 @@ export default async function HomePage({ params }: { params: Params }) {
           action={
             <Link
               href={localisedPath(locale, "/projects")}
-              className="group shrink-0 font-mono text-xs text-base-500 transition-colors hover:text-accent"
+              className="group -my-3.5 shrink-0 py-3.5 font-mono text-xs text-base-500 transition-colors hover:text-accent"
             >
               {dict.home.allProjects}
               <span
@@ -250,7 +250,7 @@ export default async function HomePage({ params }: { params: Params }) {
             </Link>
           }
         >
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-5 sm:grid-cols-2">
             {projects.map((project, index) => (
               <ProjectCard
                 key={project.slug}
@@ -274,7 +274,7 @@ export default async function HomePage({ params }: { params: Params }) {
           action={
             <Link
               href={localisedPath(locale, "/about")}
-              className="group shrink-0 font-mono text-xs text-base-500 transition-colors hover:text-accent"
+              className="group -my-3.5 shrink-0 py-3.5 font-mono text-xs text-base-500 transition-colors hover:text-accent"
             >
               {dict.home.skillsMore}
               <span

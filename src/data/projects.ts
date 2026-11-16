@@ -51,6 +51,51 @@ export type ResolvedProject = Omit<Project, "copy"> & ProjectCopy;
 
 export const projects: Project[] = [
   {
+    slug: "artspace",
+    category: "software",
+    tags: ["Vanilla JS", "SPA Router", "i18n", "ImageKit", "Cloudflare"],
+    year: 2026,
+    featured: true,
+    links: [{ labelKey: "liveSite", href: "https://artspacekm.space" }],
+    shots: [
+      {
+        src: "/image/projects/artspace-hero.webp",
+        width: 1200,
+        height: 675,
+        alt: "The ArtSpace home page, styled as an open sketchbook with the headline A living sketchbook.",
+      },
+      {
+        src: "/image/projects/artspace-gallery.webp",
+        width: 1200,
+        height: 675,
+        alt: "The community wall, with original drawings pinned as cards on the sketchbook page.",
+      },
+      {
+        src: "/image/projects/artspace-sketchbook.webp",
+        width: 1200,
+        height: 675,
+        alt: "The page-turn sketchbook reader, showing the cover and the first plate of the collection.",
+      },
+    ],
+    copy: {
+      en: {
+        title: "ArtSpace",
+        summary:
+          "A bilingual art-community platform where artists publish original drawings page by page, browse each other's work, and keep a shared sketchbook alive.",
+        description: [
+          "ArtSpace is a living sketchbook: artists upload originals — pencil portraits, studies, collections — and each piece becomes a page in a shared book that visitors can browse, like, save, and share. The hand-made paper aesthetic is deliberate: the interface should feel like the work it holds, right down to the spiral binding on the home page.",
+          "The front end is a hand-rolled vanilla-JS single-page app — a custom router, Khmer and English on the same URLs, dark and light themes, an intro animation, and a drag-to-turn reader that lays the whole gallery out as a physical book. Pages are served with ImageKit handling image resizing and Cloudflare in front, so the gallery stays quick on mobile data.",
+        ],
+        highlights: [
+          "Original-artwork gallery with categories, likes, saves, and share links",
+          "Page-turn sketchbook reader — swipe, drag a page corner, or use the keyboard",
+          "Khmer and English on the same URLs, plus dark and light themes",
+          "Artist profiles, community pages, and an upload flow backed by ImageKit",
+        ],
+      },
+    },
+  },
+  {
     slug: "class-management-system",
     category: "software",
     tags: ["Laravel", "PHP", "MySQL", "Bootstrap", "REST API"],
