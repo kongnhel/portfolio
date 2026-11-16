@@ -32,11 +32,10 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f8fafc" },
-    { media: "(prefers-color-scheme: dark)", color: "#05070f" },
-  ],
-  colorScheme: "light dark",
+  // The design is theme-invariant: one dark cyber scene in both states, so
+  // the browser chrome stays dark regardless of the stored preference.
+  themeColor: "#05070f",
+  colorScheme: "dark",
 };
 
 export default async function LocaleLayout({

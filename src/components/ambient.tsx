@@ -17,8 +17,8 @@ import { useEffect, useRef } from "react";
  *   • one rAF loop for both canvases, paused when the tab is hidden;
  *   • device-aware budgets (streak count, glyph density, pixel ratio);
  *   • static single frame under prefers-reduced-motion;
- *   • theme-aware palettes, swapped on the `themechange` event without
- *     restarting the loop.
+ *   • palette and rendering are theme-independent: the scene looks exactly
+ *     the same in light and dark mode, so no theme change can wash it out.
  */
 
 type Streak = {
@@ -49,16 +49,6 @@ const DARK_PALETTE: Palette = {
   ray: "#5f6fff",
   alphaScale: 1,
   additive: true,
-};
-
-/** Daylight hologram: the same structure in inks on pale paper. */
-const LIGHT_PALETTE: Palette = {
-  streaks: ["#0e7490", "#1d4ed8", "#6d28d9", "#be185d", "#b91c1c"],
-  bit: ["#0e7490", "#3b5bdb", "#7048e8", "#c2255c", "#c92a2a"],
-  lines: ["#0e7490", "#7048e8", "#c2255c"],
-  ray: "#5f6fff",
-  alphaScale: 0.5,
-  additive: false,
 };
 
 function rgba(hex: string, a: number): string {
@@ -125,13 +115,8 @@ export function Ambient() {
       };
     };
 
-    const pickPalette = () =>
-      document.documentElement.classList.contains("dark")
-        ? DARK_PALETTE
-        : LIGHT_PALETTE;
-
-    let palette = pickPalette();
-    let sprites: HTMLCanvasElement[] = palette.streaks.map(makeSprite);
+    const palette = DARK_PALETTE;
+    const sprites: HTMLCanvasElement[] = palette.streaks.map(makeSprite);
     let streaks: Streak[] = [];
     let rows: { chars: number[] }[] = [];
     let vw = 0;
@@ -323,12 +308,6 @@ export function Ambient() {
       drawFloor();
     }
 
-    function onTheme() {
-      palette = pickPalette();
-      sprites = palette.streaks.map(makeSprite);
-      if (reducedMq.matches) drawStatic();
-    }
-
     function onVisibility() {
       document.documentElement.classList.toggle("tab-hidden", document.hidden);
       if (document.hidden) stop();
@@ -351,7 +330,6 @@ export function Ambient() {
     else start();
 
     window.addEventListener("resize", onResize, { passive: true });
-    window.addEventListener("themechange", onTheme);
     document.addEventListener("visibilitychange", onVisibility);
     compactMq.addEventListener("change", resize);
     coarseMq.addEventListener("change", resize);
@@ -361,7 +339,6 @@ export function Ambient() {
       stop();
       window.clearTimeout(resizeTimer);
       window.removeEventListener("resize", onResize);
-      window.removeEventListener("themechange", onTheme);
       document.removeEventListener("visibilitychange", onVisibility);
       compactMq.removeEventListener("change", resize);
       coarseMq.removeEventListener("change", resize);
