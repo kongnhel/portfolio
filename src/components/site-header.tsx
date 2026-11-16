@@ -5,7 +5,8 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { ScrollProgress } from "@/components/scroll-progress";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { navLabelKeys, navPaths } from "@/data/site";
+import { SocialIcon } from "@/components/tech-icon";
+import { navLabelKeys, navPaths, site } from "@/data/site";
 import type { Dictionary } from "@/lib/i18n";
 import { isSamePath, localisedPath, type Locale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
@@ -33,8 +34,10 @@ export function SiteHeader({
     label: dict.nav[navLabelKeys[path]],
   }));
 
+  const github = site.socials.find((s) => s.label === "GitHub");
+
   return (
-    <header className="sticky top-0 z-50 border-b border-base-800 bg-base-950/85 backdrop-blur">
+    <header className="sticky top-0 z-50 border-b border-base-800 bg-base-950/85 backdrop-blur-md">
       {/* Hairline of accent along the very top edge, so the bar reads as an
           active window rather than a plain border. */}
       <span
@@ -42,7 +45,7 @@ export function SiteHeader({
         className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-accent via-accent-2 to-transparent"
       />
 
-      <div className="relative mx-auto flex h-16 max-w-3xl items-center justify-between gap-4 px-6">
+      <div className="relative mx-auto flex h-16 max-w-4xl items-center justify-between gap-4 px-5 sm:px-6">
         <Link
           href={localisedPath(locale)}
           className="group flex items-center font-mono text-sm tracking-tight transition-colors"
@@ -50,7 +53,7 @@ export function SiteHeader({
           <span aria-hidden="true" className="text-base-700">
             ~/
           </span>
-          <span className="text-accent group-hover:text-accent-bright">
+          <span className="text-accent transition-colors group-hover:text-accent-bright">
             nhel-kong
           </span>
           <span
@@ -70,7 +73,7 @@ export function SiteHeader({
                 href={href}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "relative z-10 px-3 py-1.5 font-mono text-xs uppercase tracking-wider transition-colors duration-200",
+                  "nav-link relative z-10 px-3 py-2 font-mono text-xs uppercase tracking-wider transition-colors duration-200",
                   active
                     ? "text-accent"
                     : "text-base-500 hover:text-base-100",
@@ -82,20 +85,32 @@ export function SiteHeader({
           })}
         </nav>
 
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1.5">
+          {github ? (
+            <a
+              href={github.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={dict.home.openGithub}
+              title={dict.home.openGithub}
+              className="hidden p-2.5 text-base-500 transition-colors hover:text-accent sm:block"
+            >
+              <SocialIcon kind="github" className="size-[18px]" />
+            </a>
+          ) : null}
           <ThemeToggle lightLabel={dict.theme.light} darkLabel={dict.theme.dark} />
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
             aria-controls="mobile-nav"
-            className="border border-base-800 p-1.5 text-base-300 transition-colors hover:border-accent hover:text-accent sm:hidden"
+            className="border border-base-800 p-2.5 text-base-300 transition-colors hover:border-accent hover:text-accent sm:hidden"
           >
             <span className="sr-only">{open ? "Close menu" : "Open menu"}</span>
             <span className="icon-swap block" key={open ? "close" : "open"}>
               <svg
-                width="20"
-                height="20"
+                width="18"
+                height="18"
                 viewBox="0 0 20 20"
                 fill="none"
                 stroke="currentColor"
@@ -121,7 +136,7 @@ export function SiteHeader({
         className={cn("mobile-nav", open && "is-open")}
       >
         <div>
-          <ul className="mx-auto max-w-3xl border-t border-base-800 px-6 py-2">
+          <ul className="mx-auto max-w-4xl border-t border-base-800 px-5 py-2 sm:px-6">
             {labels.map(({ path, label }, index) => {
               const href = localisedPath(locale, path);
               return (
@@ -136,7 +151,7 @@ export function SiteHeader({
                     href={href}
                     aria-current={isSamePath(pathname, href) ? "page" : undefined}
                     className={cn(
-                      "flex items-center gap-2 border-l-2 px-3 py-2.5 font-mono text-xs uppercase tracking-wider transition-colors hover:bg-base-900 hover:text-accent",
+                      "flex items-center gap-2 border-l-2 px-3 py-3 font-mono text-sm uppercase tracking-wider transition-colors hover:bg-base-900 hover:text-accent",
                       isSamePath(pathname, href)
                         ? "border-accent text-accent"
                         : "border-transparent text-base-300",
@@ -153,6 +168,30 @@ export function SiteHeader({
                 </li>
               );
             })}
+            {github ? (
+              <li
+                className="transition-all duration-300 ease-out sm:hidden"
+                style={{
+                  transitionDelay: open ? `${labels.length * 45 + 60}ms` : "0ms",
+                }}
+              >
+                <a
+                  href={github.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 border-l-2 border-transparent px-3 py-3 font-mono text-sm uppercase tracking-wider text-base-300 transition-colors hover:bg-base-900 hover:text-accent"
+                  style={{
+                    opacity: open ? 1 : 0,
+                    transform: open ? "none" : "translateX(-8px)",
+                    transition: "opacity 300ms ease, transform 300ms ease",
+                    transitionDelay: open ? `${labels.length * 45 + 60}ms` : "0ms",
+                  }}
+                >
+                  <SocialIcon kind="github" className="size-4" />
+                  GitHub
+                </a>
+              </li>
+            ) : null}
           </ul>
         </div>
       </nav>
@@ -203,4 +242,3 @@ function NavPill({ pathname, locale }: { pathname: string; locale: Locale }) {
     />
   );
 }
-

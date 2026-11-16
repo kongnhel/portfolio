@@ -4,11 +4,15 @@ import { Reveal } from "@/components/reveal";
 import { cn } from "@/lib/utils";
 
 interface SectionProps {
+  /** Display heading for the section. */
   title?: string;
+  /** Terminal kicker shown above the title, e.g. "~/projects". */
+  kicker?: string;
   /** Small right-aligned content rendered next to the title. */
   action?: ReactNode;
   children: ReactNode;
   className?: string;
+  id?: string;
   /**
    * Wrap the children in a scroll reveal. Turn it off when the children
    * already reveal themselves (a staggered list, or cards with their own
@@ -19,37 +23,45 @@ interface SectionProps {
 
 export function Section({
   title,
+  kicker,
   action,
   children,
   className,
+  id,
   reveal = true,
 }: SectionProps) {
   return (
-    <section className={cn("py-12", className)}>
+    <section id={id} className={cn("py-14 sm:py-16", className)}>
       {title ? (
         <Reveal
           as="div"
           variant="up"
-          y={10}
-          duration={600}
-          className="mb-6 flex items-baseline justify-between gap-4"
+          y={12}
+          duration={650}
+          className="mb-8"
         >
-          <span className="flex min-w-0 flex-1 items-center gap-3">
-            <span aria-hidden="true" className="rule-in h-px w-6 shrink-0 bg-accent" />
-            {/* Reads as a shell command rather than a page-heading label. */}
-            <h2 className="truncate font-mono text-xs uppercase tracking-[0.2em] text-base-500">
-              <span aria-hidden="true" className="prompt">
-                ~${" "}
-              </span>
-              {title}
-            </h2>
-            {/* Hairline that fills the rest of the row, like a ruled editor. */}
-            <span
-              aria-hidden="true"
-              className="rule-in hidden h-px flex-1 bg-base-800 sm:block"
-            />
-          </span>
-          {action ? <div className="shrink-0">{action}</div> : null}
+          <div className="flex items-end justify-between gap-4">
+            <span className="min-w-0">
+              {kicker ? (
+                <p className="font-mono text-xs text-base-500">
+                  <span aria-hidden="true" className="prompt">
+                    ~${" "}
+                  </span>
+                  <span className="text-base-700">{kicker}</span>
+                </p>
+              ) : null}
+              {/* Reads as a shell command rather than a page-heading label. */}
+              <h2 className="mt-1.5 truncate text-2xl font-bold tracking-tight text-balance text-base-100 sm:text-3xl">
+                {title}
+              </h2>
+            </span>
+            {action ? <div className="shrink-0">{action}</div> : null}
+          </div>
+          {/* Hairline that fills the rest of the row, like a ruled editor. */}
+          <span
+            aria-hidden="true"
+            className="rule-in mt-4 block h-px bg-base-800"
+          />
         </Reveal>
       ) : null}
       {reveal ? (
@@ -72,7 +84,7 @@ export function Container({
   className?: string;
 }) {
   return (
-    <div className={cn("mx-auto w-full max-w-3xl px-6", className)}>
+    <div className={cn("mx-auto w-full max-w-4xl px-5 sm:px-6", className)}>
       {children}
     </div>
   );
@@ -86,26 +98,26 @@ export function PageHeader({
 }: {
   title: string;
   lede?: string;
-  /** Route breadcrumb shown above the title, e.g. "/projects". */
+  /** Route breadcrumb shown above the title, e.g. "~/projects". */
   path?: string;
 }) {
   return (
-    <div className="pt-16 pb-4">
+    <div className="pt-16 pb-6 sm:pt-20">
       <Reveal as="div" variant="up" y={14} duration={650}>
-        <p aria-hidden="true" className="font-mono text-xs text-base-700">
+        <p aria-hidden="true" className="font-mono text-xs text-base-500">
           <span className="prompt">nhel@portfolio</span>
-          <span className="text-base-500">:</span>
+          <span className="text-base-700">:</span>
           <span className="text-accent">{path ?? "~"}</span>
-          <span className="text-base-500">$</span>
+          <span className="text-base-700">$</span>
           <span className="caret-blink ml-0.5" />
         </p>
-        <h1 className="mt-2 text-3xl font-bold tracking-tight text-balance sm:text-4xl">
+        <h1 className="mt-3 text-4xl font-bold tracking-tight text-balance sm:text-5xl">
           {title}
         </h1>
       </Reveal>
       {lede ? (
         <Reveal as="div" variant="up" y={14} duration={650} delay={110}>
-          <p className="mt-3 max-w-prose text-base leading-relaxed text-base-500">
+          <p className="mt-4 max-w-prose text-lg leading-relaxed text-pretty text-base-500">
             {lede}
           </p>
         </Reveal>
@@ -114,7 +126,7 @@ export function PageHeader({
   );
 }
 
-/** Pill used for tags, categories, and skills. Square, like everything else. */
+/** Pill used for tags, categories, and skills without a known glyph. */
 export function Tag({
   children,
   className,
@@ -181,18 +193,22 @@ export function LinkButton({
   children,
   variant = "primary",
   external = false,
+  className,
 }: {
   href: string;
   children: ReactNode;
   variant?: "primary" | "secondary";
   external?: boolean;
+  className?: string;
 }) {
   const classes = cn(
-    "group/btn sheen inline-flex items-center gap-2 border px-4 py-2 font-mono text-sm font-medium transition-all duration-300",
-    "hover:-translate-y-0.5",
+    "group/btn sheen inline-flex items-center gap-2 border px-4 py-2.5 font-mono text-sm font-medium transition-all duration-300",
+    // Press: settle the lift and give a whisper of scale so taps feel physical.
+    "hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.97]",
     variant === "primary"
-      ? "border-accent bg-accent text-base-950 hover:shadow-[0_0_22px_-4px_var(--accent)]"
-      : "border-base-800 text-base-300 hover:border-accent hover:bg-accent/10 hover:text-accent",
+      ? "btn-accent border-accent bg-accent text-base-950 hover:shadow-[0_0_22px_-4px_var(--accent)]"
+      : "btn-fill border-base-800 text-base-300 hover:border-accent hover:text-accent",
+    className,
   );
 
   const label = (

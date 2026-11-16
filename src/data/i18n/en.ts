@@ -17,6 +17,7 @@ export const en = {
 
   a11y: {
     skipToContent: "Skip to content",
+    sections: "On this page",
   },
 
   identity: {
@@ -39,6 +40,41 @@ export const en = {
     ctaBody:
       "I'm happy to talk about work, collaborations, or anything else useful.",
     contactMe: "Contact me",
+
+    // Hero
+    headline: "I build software, design graphics, and teach technology.",
+    openGithub: "Open GitHub profile",
+    openTelegram: "Open Telegram chat",
+    openFacebook: "Open Facebook profile",
+
+    // Honest, verifiable numbers — no invented achievements.
+    stats: [
+      { value: "3", label: "systems running live for a university" },
+      { value: "2", label: "languages on every build — EN & KH" },
+      { value: "4", label: "years of computer-science study" },
+    ],
+
+    // What I do
+    rolesTitle: "What I do",
+    rolesKicker: "~/what-i-do",
+    roles: [
+      {
+        title: "Software development",
+        body: "Web systems built with PHP, Node.js and MySQL — including class management, enrolment and attendance platforms used at National Meanchey University.",
+      },
+      {
+        title: "Graphic design",
+        body: "Logos, banners and marketing material, prepared with a print-and-screen eye and a course in layout and typography.",
+      },
+      {
+        title: "Teaching",
+        body: "Computer skills classes for beginners, broken into steps small enough that nobody gets left behind.",
+      },
+    ],
+
+    // Toolkit preview
+    skillsMore: "Full skill set",
+    skillsMoreTitle: "See the complete list of tools and technologies",
   },
 
   projectsPage: {
@@ -57,6 +93,8 @@ export const en = {
     source: "Source",
     previous: "Previous",
     next: "Next",
+    // Accessible name for the card's main link ("title — view case study").
+    viewCaseStudy: "View case study",
   },
 
   category: {
@@ -90,6 +128,19 @@ export const en = {
     basedIn: "Based in",
     formNote:
       "This form opens your own email client with the message pre-filled — nothing is sent to a server. Prefer to write directly?",
+
+    // Channels
+    channels: "Direct channels",
+    channelsKicker: "~/contact",
+    copyEmail: "Copy email address",
+    copied: "Copied",
+    copyFailed: "Copy failed — select the address manually.",
+    openChat: "Opens in a new tab",
+
+    // After submit
+    sentTitle: "Opening your email client…",
+    sentBody:
+      "Your message is pre-filled and ready to send. If nothing opened, use the address below.",
   },
 
   form: {
@@ -114,6 +165,7 @@ export const en = {
     pages: "Pages",
     elsewhere: "Elsewhere",
     builtWith: "Built with Next.js and Tailwind CSS.",
+    backToTop: "Back to top",
   },
 
   notFound: {

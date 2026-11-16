@@ -50,10 +50,13 @@ export function ContactForm({ dict }: { dict: Dictionary }) {
   });
   const [errors, setErrors] = useState<Errors>({});
   const [touched, setTouched] = useState<Partial<Record<keyof Fields, boolean>>>({});
+  // Flips once the visitor's mail client has been handed the message.
+  const [sent, setSent] = useState(false);
 
   function update(key: keyof Fields, value: string) {
     const next = { ...fields, [key]: value };
     setFields(next);
+    setSent(false);
     // Re-validate a field only once it has been blurred, so errors do not
     // appear while the visitor is still typing their first character.
     if (touched[key]) {
@@ -81,12 +84,13 @@ export function ContactForm({ dict }: { dict: Dictionary }) {
       `${fields.message.trim()}\n\n—\n${fields.name.trim()}\n${fields.email.trim()}`,
     );
 
+    setSent(true);
     window.location.href = `mailto:${site.email}?subject=${subject}&body=${body}`;
   }
 
   const inputClass =
-    "field w-full border border-base-800 bg-base-900 px-3 py-2 font-mono text-sm text-base-100 placeholder:text-base-700";
-  const errorClass = "border-red-400/60 shake";
+    "field w-full border border-base-800 bg-base-900 px-3 py-2.5 font-mono text-sm text-base-100 placeholder:text-base-700";
+  const errorClass = "border-danger/60 shake";
 
   function fieldProps(key: keyof Fields) {
     return {
@@ -127,7 +131,7 @@ export function ContactForm({ dict }: { dict: Dictionary }) {
           {errors.name ? (
             <p
               id="error-name"
-              className="error-in mt-1.5 font-mono text-xs text-red-400"
+              className="error-in mt-1.5 font-mono text-xs text-danger"
             >
               <span aria-hidden="true">! </span>
               {errors.name}
@@ -154,7 +158,7 @@ export function ContactForm({ dict }: { dict: Dictionary }) {
           {errors.email ? (
             <p
               id="error-email"
-              className="error-in mt-1.5 font-mono text-xs text-red-400"
+              className="error-in mt-1.5 font-mono text-xs text-danger"
             >
               <span aria-hidden="true">! </span>
               {errors.email}
@@ -181,7 +185,7 @@ export function ContactForm({ dict }: { dict: Dictionary }) {
         {errors.message ? (
           <p
             id="error-message"
-            className="error-in mt-1.5 font-mono text-xs text-red-400"
+            className="error-in mt-1.5 font-mono text-xs text-danger"
           >
             <span aria-hidden="true">! </span>
             {errors.message}
@@ -191,11 +195,29 @@ export function ContactForm({ dict }: { dict: Dictionary }) {
 
       <button
         type="submit"
-        className="sheen inline-flex items-center gap-1 border border-accent bg-accent px-4 py-2.5 font-mono text-sm font-medium text-base-950 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_22px_-4px_var(--accent)]"
+        className="sheen btn-accent inline-flex items-center gap-1 border border-accent bg-accent px-5 py-2.5 font-mono text-sm font-medium text-base-950 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_22px_-4px_var(--accent)]"
       >
         <span aria-hidden="true">&gt; </span>
         {dict.form.send}
       </button>
+
+      {/* Success feedback after the mailto hand-off. */}
+      <p role="status" aria-live="polite">
+        {sent ? (
+          <span className="error-in block border border-accent/40 bg-accent/10 px-3 py-2.5 text-sm">
+            <span className="block font-mono text-xs uppercase tracking-wider text-accent">
+              <span aria-hidden="true" className="led mr-1.5" />
+              {dict.contactPage.sentTitle}
+            </span>
+            <span className="mt-1 block text-sm text-base-300">
+              {dict.contactPage.sentBody}{" "}
+              <a href={`mailto:${site.email}`} className="text-accent hover:underline">
+                {site.email}
+              </a>
+            </span>
+          </span>
+        ) : null}
+      </p>
 
       <p className="font-mono text-xs leading-relaxed text-base-700">
         {dict.contactPage.formNote}{" "}

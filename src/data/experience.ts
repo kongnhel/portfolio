@@ -200,6 +200,49 @@ export const skillSummary: string[] = [
   "Canva",
 ];
 
+/**
+ * Three-group preview for the home page toolkit section — the highlights of
+ * `skillGroups`, trimmed so the section stays scannable. Same shape as
+ * `skillGroups`, so the About page and this share their copy structure.
+ */
+export const skillPreview: SkillGroup[] = [
+  {
+    copy: {
+      en: {
+        title: "Development",
+        skills: ["PHP", "JavaScript", "Python", "Laravel", "Node.js", "MySQL"],
+      },
+    },
+  },
+  {
+    copy: {
+      en: {
+        title: "Design",
+        skills: [
+          "Adobe Photoshop",
+          "Adobe Illustrator",
+          "Canva",
+          "Logos",
+          "Banners",
+        ],
+      },
+    },
+  },
+  {
+    copy: {
+      en: {
+        title: "Teaching & office",
+        skills: [
+          "Lesson planning",
+          "PowerPoint",
+          "Microsoft Excel",
+          "Classroom time management",
+        ],
+      },
+    },
+  },
+];
+
 export function resolveEntry(entry: Entry, locale: Locale): ResolvedEntry {
   return { period: entry.period, ...entry.copy[locale] };
 }

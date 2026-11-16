@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getDictionary } from "@/lib/i18n";
 import { themeScript } from "@/lib/theme";
+import { fontVars } from "@/lib/fonts";
 import { navLabelKeys, navPaths } from "@/data/site";
 import "./globals.css";
 
@@ -34,12 +35,12 @@ export default function GlobalNotFound() {
   return (
     // themeScript adds `dark` before React hydrates; acknowledge the
     // legitimate difference (same as the locale layout).
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className={fontVars}>
       <head>
         {/* Colours the page before first paint, same as the locale layout. */}
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body className="flex min-h-screen flex-col items-center justify-center bg-base-950 px-6 py-16 font-mono text-base-100 antialiased">
+      <body className="flex min-h-screen flex-col items-center justify-center bg-base-950 px-6 py-16 text-base-100 antialiased">
         <main className="page-enter w-full max-w-md border border-base-800 bg-base-900/40 p-6">
           <p className="font-mono text-xs text-base-700">
             <span aria-hidden="true" className="prompt">
@@ -54,12 +55,12 @@ export default function GlobalNotFound() {
             <span aria-hidden="true" className="caret-blink ml-0.5" />
           </p>
 
-          <p className="mt-4 font-mono text-6xl font-bold text-accent text-glow">
+          <p className="mt-4 font-mono text-7xl font-bold text-accent text-glow">
             {/* Float sits on its own node: two animations share the `animation`
                 shorthand and would collide on the same element. */}
             <span className="animate-float inline-block">404</span>
           </p>
-          <h1 className="mt-3 text-3xl font-bold tracking-tight">
+          <h1 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
             {dict.notFound.title}
           </h1>
           <p className="mt-3 leading-relaxed text-base-500">
@@ -72,7 +73,7 @@ export default function GlobalNotFound() {
                 <li key={path}>
                   <a
                     href={href}
-                    className="inline-flex items-center gap-2 border border-base-800 px-3 py-1.5 font-mono text-sm text-base-300 transition-all duration-300 hover:-translate-y-0.5 hover:border-accent hover:text-accent"
+                    className="inline-flex items-center gap-2 border border-base-800 px-3 py-2 font-mono text-sm text-base-300 transition-all duration-300 hover:-translate-y-0.5 hover:border-accent hover:text-accent"
                   >
                     <span aria-hidden="true" className="prompt">
                       &gt;

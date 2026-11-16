@@ -1,25 +1,17 @@
 import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
-import { JetBrains_Mono } from "next/font/google";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Ambient } from "@/components/ambient";
 import { PointerGlow } from "@/components/pointer-glow";
+import { CursorFollower } from "@/components/cursor-follower";
 import { PageTransition } from "@/components/page-transition";
 import { site } from "@/data/site";
 import { getDictionary, isLocale, locales, localeMeta } from "@/lib/i18n";
 import { siteUrl } from "@/lib/seo";
 import { themeScript } from "@/lib/theme";
+import { fontVars } from "@/lib/fonts";
 import "../globals.css";
-
-// JetBrains Mono carries the whole site: it is the terminal voice the design
-// is built around, and it has a generous x-height for reading at body sizes.
-const jetbrains = JetBrains_Mono({
-  variable: "--font-jetbrains",
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
-  display: "swap",
-});
 
 export const dynamicParams = false;
 
@@ -69,7 +61,7 @@ export default async function LocaleLayout({
       // here; the class itself is preserved (React does not reconcile attributes
       // it did not render).
       suppressHydrationWarning
-      className={`${jetbrains.variable} h-full scroll-pt-20 antialiased`}
+      className={`${fontVars} h-full scroll-pt-20 antialiased`}
     >
       <head>
         {/* Applies the stored theme before first paint to avoid a flash. */}
@@ -87,6 +79,7 @@ export default async function LocaleLayout({
         {/* Decorative layers first, so content stacks above them. */}
         <Ambient />
         <PointerGlow />
+        <CursorFollower />
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-100 focus:rounded focus:bg-accent focus:px-3 focus:py-2 focus:text-sm focus:text-base-950"

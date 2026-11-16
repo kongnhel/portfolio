@@ -12,7 +12,7 @@ export function Timeline({ entries }: { entries: ResolvedEntry[] }) {
         className="timeline-rail absolute top-0 bottom-0 left-0 w-px bg-linear-to-b from-accent via-base-800 to-transparent"
       />
 
-      <ol className="relative space-y-8 pl-6">
+      <ol className="relative space-y-9 pl-7">
         {entries.map((entry, index) => (
           <Reveal
             as="li"
@@ -25,14 +25,16 @@ export function Timeline({ entries }: { entries: ResolvedEntry[] }) {
           >
             <span
               aria-hidden="true"
-              className="timeline-dot absolute top-1.5 -left-[1.9rem] size-2.5 border-2 border-base-950 bg-accent shadow-[0_0_10px_-1px_var(--accent)]"
+              className="timeline-dot absolute top-1.5 -left-[2.15rem] size-2.5 border-2 border-base-950 bg-accent shadow-[0_0_10px_-1px_var(--accent)]"
             />
-            <p className="font-mono text-xs uppercase tracking-wider text-base-700">
+            <p className="font-mono text-xs uppercase tracking-wider text-base-500">
               {entry.period}
             </p>
-            <h3 className="mt-1 font-bold text-base-100">{entry.title}</h3>
-            <p className="text-sm text-accent">{entry.organisation}</p>
-            <ul className="mt-2 space-y-1.5">
+            <h3 className="mt-1.5 text-lg font-bold text-base-100">
+              {entry.title}
+            </h3>
+            <p className="mt-0.5 text-sm text-accent">{entry.organisation}</p>
+            <ul className="mt-2.5 space-y-1.5">
               {entry.points.map((point) => (
                 <li
                   key={point}

@@ -24,23 +24,26 @@ export default async function ProjectsPage({ params }: { params: Params }) {
   const sorted = getProjects(locale).sort((a, b) => b.year - a.year);
 
   return (
-    <Container>
-      <PageHeader title={dict.projectsPage.title} lede={dict.projectsPage.lede} path="~/projects" />
+    <Container className="max-w-5xl">
+      <PageHeader
+        title={dict.projectsPage.title}
+        lede={dict.projectsPage.lede}
+        path="~/projects"
+      />
 
-{sorted.length > 0 ? (
-          <div className="border-t border-base-800 pb-8">
-            {sorted.map((project, index) => (
-              <div key={project.slug} className="border-b border-base-800">
-                <ProjectCard
-                  project={project}
-                  locale={locale}
-                  dict={dict}
-                  index={index}
-                />
-              </div>
-            ))}
-          </div>
-        ) : (
+      {sorted.length > 0 ? (
+        <div className="grid gap-5 pb-10 sm:grid-cols-2 lg:grid-cols-3">
+          {sorted.map((project, index) => (
+            <ProjectCard
+              key={project.slug}
+              project={project}
+              locale={locale}
+              dict={dict}
+              index={index}
+            />
+          ))}
+        </div>
+      ) : (
         <p className="pb-8 font-mono text-base-500">
           {dict.projectsPage.empty}{" "}
           <code className="text-sm text-accent">{dict.projectsPage.addSome}</code>
