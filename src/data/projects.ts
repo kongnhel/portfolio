@@ -51,6 +51,54 @@ export type ResolvedProject = Omit<Project, "copy"> & ProjectCopy;
 
 export const projects: Project[] = [
   {
+    slug: "black-box-bmi",
+    category: "software",
+    tags: ["Vanilla JS", "Three.js", "WebGL", "i18n", "localStorage"],
+    year: 2026,
+    featured: true,
+    links: [
+      { labelKey: "liveSite", href: "https://bmi.artspacekm.space" },
+      { labelKey: "source", href: "https://github.com/kongnhel/bmi_project" },
+    ],
+    shots: [
+      {
+        src: "/image/projects/bmi-hero.webp",
+        width: 1280,
+        height: 800,
+        alt: "The Black Box hero: the 3D wellness guide Avery beside the headline, with character selection and a greeting.",
+      },
+      {
+        src: "/image/projects/bmi-calculator.webp",
+        width: 1280,
+        height: 800,
+        alt: "The calculator showing a BMI of 22.9 with the coloured gauge, healthy weight range, and plain-language guidance.",
+      },
+      {
+        src: "/image/projects/bmi-categories.webp",
+        width: 1280,
+        height: 800,
+        alt: "The adult BMI category reference, with the healthy range card marked as the current result.",
+      },
+    ],
+    copy: {
+      en: {
+        title: "Black Box — BMI Calculator",
+        summary:
+          "A privacy-first BMI calculator with a live 3D wellness guide that reacts to your result — bilingual, fully local, and built without a framework or backend.",
+        description: [
+          "Black Box began as a small static BMI page. This version keeps its idea — a friendly health check that never asks for an account — and gives it a real product shell: a live 3D guide named Avery stands beside the calculator, changing posture, expression, and body shape as the number changes, and explains the result without judgment.",
+          "Everything runs in the browser: measurements, history, and preferences stay in localStorage, and there is no backend, no analytics, and no health data on a server. The site is plain ES modules around a self-hosted Three.js scene — a procedural articulated character whose nine morph controls interpolate smoothly between BMI anchors — plus adaptive quality tiers, offscreen pausing, a 2D fallback for devices without WebGL, and an English/Khmer interface including the printable report.",
+        ],
+        highlights: [
+          "Live Three.js wellness guide: six BMI reactions and continuous body-shape interpolation driven by the unrounded result",
+          "Metric and imperial units, animated gauge, healthy weight range, local history, and a print-to-PDF report",
+          "Privacy by design: no accounts, analytics, or backend — data stays in the browser and history is opt-in",
+          "Adaptive rendering tiers with capped pixel ratio, offscreen pause, and a 2D fallback; English and Khmer throughout",
+        ],
+      },
+    },
+  },
+  {
     slug: "artspace",
     category: "software",
     tags: ["Vanilla JS", "SPA Router", "i18n", "ImageKit", "Cloudflare"],
